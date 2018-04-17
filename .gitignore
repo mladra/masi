@@ -15,6 +15,9 @@
 
 # IDEs and editors
 /.idea
+**/.idea
+.idea
+.idea/*
 
 # misc
 /.sass-cache
