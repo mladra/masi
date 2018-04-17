@@ -19,7 +19,7 @@ Po wywołaniu powyższej komendy projekt uruchomić można komendą
 na windowsie należy wywołać plik `gradlew.bat` z parametrem `bootRun`
 
 ## Uruchomienie aplikacji Angular
-* Instalacja Node.js.
+* Instalacja najnowszego Node.js. Patrz https://nodejs.org/en/
 * Po pobraniu projektu z repozytorium należy w konsoli wejść do katalogu `masi-STP-interface`.
 * Należy wywołać komendę:
 ```bash
