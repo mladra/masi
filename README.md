@@ -5,6 +5,17 @@ MASI - Short-Term Pelicans
 ### java sdk
 Na początku należy upewnić się, że kompilator javy jest zainstalowany i ustawiona jest ścieżka do java home. Patrz
 https://confluence.atlassian.com/doc/setting-the-java_home-variable-in-windows-8895.html
+
+### przed zbudowaniem
+Należy w konstruktorze klasy ConversationServiceImpl dodać w miejscu komentarza następujący fragment kodu:
+```bash
+conversation = new Conversation(
+        "2018-02-16",
+        "login",
+        "password");
+```
+Login i Password należy zastąpić odpowiednimi danymi dostępowymi z aplikacji Conversation dostarczanej przez Watson IBM.
+
 ### zbudowanie projektu
 Po pobraniu projektu z repozytorium należy w konsoli wejść do katalogu `masi-STP-backend` i wywołać komendę
 ```bash
