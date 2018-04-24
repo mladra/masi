@@ -4,5 +4,5 @@ import pl.lodz.p.it.masi.stp.chatbot.entities.MessageDto;
 
 public interface ConversationService {
 
-  MessageDto helloWorld(MessageDto message);
+  MessageDto processMessage(MessageDto message);
 }
