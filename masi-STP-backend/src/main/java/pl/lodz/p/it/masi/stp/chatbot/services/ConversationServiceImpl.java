@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.masi.stp.chatbot.entities.MessageDto;
 
-import java.util.List;
-
 @Service
 public class ConversationServiceImpl implements ConversationService {
 
