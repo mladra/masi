@@ -1,8 +1,8 @@
 package pl.lodz.p.it.masi.stp.chatbot.services;
 
-import com.ibm.watson.developer_cloud.conversation.v1.model.MessageResponse;
+import pl.lodz.p.it.masi.stp.chatbot.entities.MessageDto;
 
 public interface ConversationService {
 
-  MessageResponse helloWorld(String message);
+  MessageDto helloWorld(MessageDto message);
 }

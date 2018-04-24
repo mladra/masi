@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import pl.lodz.p.it.masi.stp.chatbot.entities.MessageDto;
 import pl.lodz.p.it.masi.stp.chatbot.services.ConversationService;
 
 @RestController
@@ -20,7 +21,7 @@ public class ConversationController {
   }
 
   @RequestMapping(value = "/send", method = RequestMethod.POST)
-  public MessageResponse sendMessage(@RequestBody String message) {
+  public MessageDto sendMessage(@RequestBody MessageDto message) {
     return conversationService.helloWorld(message);
   }
 }
