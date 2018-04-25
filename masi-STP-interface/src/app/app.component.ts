@@ -28,8 +28,10 @@ export class AppComponent implements OnInit, AfterViewChecked {
     this.userMessage = '';
   }
 
-  ngOnInit() { 
+  ngOnInit() {
     this.refreshConnection();
+    this.windowRef = window.open('https://www.amazon.com');
+    this.windowRef.blur();
   }
 
   ngAfterViewChecked() {
@@ -46,9 +48,9 @@ export class AppComponent implements OnInit, AfterViewChecked {
       messageToSent.message = msg.trim();
       messageToSent.response = [];
       messageToSent.url = '';
-      
+
       this.messages.push(messageToSent);
-      
+
       this.messageService.sendMessage(messageToSent).subscribe(
         response => {
           const responseMsg = response.body;
@@ -59,14 +61,14 @@ export class AppComponent implements OnInit, AfterViewChecked {
         error => {
           this.botTyping = false;
           this.messages.push({
-            author: 'bot', 
-            message: "Ohh... Sorry, There was an unexpected error in my system. Could you please send me your message again?", 
+            author: 'bot',
+            message: 'Ohh... Sorry, There was an unexpected error in my system. Could you please send me your message again?',
             response: null,
-            url: null, 
+            url: null,
             context: null});
           console.log(error);
         }
-      )
+      );
     }
   }
 
@@ -82,9 +84,9 @@ export class AppComponent implements OnInit, AfterViewChecked {
         this.connectionError = false;
       },
       error => {
-        this.connectionError = true;  
+        this.connectionError = true;
       }
-    )
+    );
   }
 
   scrollToBottom() {
