@@ -57,6 +57,9 @@ export class AppComponent implements OnInit, AfterViewChecked {
           responseMsg.author = 'bot';
           this.botTyping = false;
           this.messages.push(responseMsg);
+          if (responseMsg.url) {
+            this.windowRef.location.href = responseMsg.url;
+          }
         },
         error => {
           this.botTyping = false;
@@ -66,7 +69,6 @@ export class AppComponent implements OnInit, AfterViewChecked {
             response: null,
             url: null,
             context: null});
-          console.log(error);
         }
       );
     }
