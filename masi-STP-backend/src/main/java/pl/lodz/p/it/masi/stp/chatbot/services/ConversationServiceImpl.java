@@ -4,6 +4,7 @@ import com.ibm.watson.developer_cloud.conversation.v1.Conversation;
 import com.ibm.watson.developer_cloud.conversation.v1.model.InputData;
 import com.ibm.watson.developer_cloud.conversation.v1.model.MessageOptions;
 import com.ibm.watson.developer_cloud.conversation.v1.model.MessageResponse;
+import com.ibm.watson.developer_cloud.conversation.v1.model.RuntimeEntity;
 import com.sun.xml.internal.ws.client.ClientTransportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import pl.lodz.p.it.masi.stp.chatbot.utils.EnumUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ConversationServiceImpl implements ConversationService {
@@ -67,15 +69,16 @@ public class ConversationServiceImpl implements ConversationService {
         ItemSearchRequest itemSearchRequest = new ItemSearchRequest();
         itemSearchRequest.setSearchIndex(CategoriesEnum.BOOKS.getName());
 
-        if (watsonResponse.getEntities().size() >= 2) {
-            String entity = watsonResponse.getEntities().get(0).getValue();
-            String searchKeyword = watsonResponse.getEntities().get(1).getValue();
-            CategoriesEnum categoriesEnum = EnumUtils.lookupByName(entity);
+        if (watsonResponse.getEntities().size() >= 1) {
+            List<String> entities = watsonResponse.getEntities().stream()
+                .map(RuntimeEntity::getValue).collect(Collectors.toList());
 
-            if (categoriesEnum != null) {
-                itemSearchRequest.setBrowseNode(categoriesEnum.getBrowseNodeId());
-            } else {
-                itemSearchRequest.setKeywords(searchKeyword);
+            for (String entity : entities) {
+                CategoriesEnum categoriesEnum = EnumUtils.lookupByName(entity);
+                if (categoriesEnum != null) {
+                    itemSearchRequest.setBrowseNode(categoriesEnum.getBrowseNodeId());
+                    break;
+                }
             }
         }
 
