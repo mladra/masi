@@ -23,6 +23,9 @@ repositories {
 	mavenCentral()
 }
 
+configurations {
+	all*.exclude module : 'spring-boot-starter-logging'
+}
 
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-data-mongodb')
