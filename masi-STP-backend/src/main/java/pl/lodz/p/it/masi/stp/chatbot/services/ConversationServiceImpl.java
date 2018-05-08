@@ -5,7 +5,6 @@ import com.ibm.watson.developer_cloud.conversation.v1.model.InputData;
 import com.ibm.watson.developer_cloud.conversation.v1.model.MessageOptions;
 import com.ibm.watson.developer_cloud.conversation.v1.model.MessageResponse;
 import com.ibm.watson.developer_cloud.conversation.v1.model.RuntimeEntity;
-import com.sun.xml.internal.ws.client.ClientTransportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +14,7 @@ import pl.lodz.p.it.masi.stp.chatbot.entities.MessageDto;
 import pl.lodz.p.it.masi.stp.chatbot.utils.EnumUtils;
 
 import javax.annotation.PostConstruct;
+import javax.xml.ws.WebServiceException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -90,7 +90,7 @@ public class ConversationServiceImpl implements ConversationService {
         ItemSearchResponse amazonResponse = null;
         try {
             amazonResponse = port.itemSearch(ItemElement);
-        } catch (ClientTransportException exc) {
+        } catch (WebServiceException exc) {
             logger.error(exc.toString());
         }
 
