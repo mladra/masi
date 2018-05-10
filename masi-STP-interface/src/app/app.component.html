@@ -20,11 +20,13 @@
             </div>
           </div>
           <div *ngIf="msg.author === 'bot'">
+            <div *ngFor="let content of msg.response">
               <div class="message-wrapper them">
                 <div class="circle-wrapper"></div>
-                <div class="text-wrapper">{{ msg.response[0] }}</div>
+                <div class="text-wrapper">{{ content }}</div>
               </div>
             </div>
+          </div>
         </div>
 
         <div *ngIf="botTyping">
