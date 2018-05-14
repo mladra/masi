@@ -60,7 +60,7 @@ public class ConversationServiceImpl implements ConversationService {
         return responseMsg;
     }
 
-    private void getAmazonResponse(MessageDto request, MessageDto response, MessageResponse watsonResponse) {
+    public void getAmazonResponse(MessageDto request, MessageDto response, MessageResponse watsonResponse) {
         AWSECommerceService service = new AWSECommerceService();
         service.setHandlerResolver(new AwsHandlerResolver(amazonSecretKey));
 
@@ -103,7 +103,7 @@ public class ConversationServiceImpl implements ConversationService {
         }
     }
 
-    private MessageResponse getWatsonResponse(MessageDto request, MessageDto response) {
+    public MessageResponse getWatsonResponse(MessageDto request, MessageDto response) {
         String workspaceId = "fb1afa02-f113-446c-ba28-a86992500910";
         InputData input = new InputData.Builder(request.getMessage()).build();
         MessageOptions options = new MessageOptions.Builder(workspaceId)
