@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewChecked, ViewChild, ElementRef } from '@ang
 import { Message } from './models/message';
 import { ConversationService } from './services/conversation.service';
 import { MessageService } from './services/message.service';
+import { MessageParser } from './services/message.parser';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +21,8 @@ export class AppComponent implements OnInit, AfterViewChecked {
 
   constructor(
     private conversationService: ConversationService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private messageParser: MessageParser
   ) {
     this.messages = [];
     this.botTyping = false;
@@ -68,7 +70,8 @@ export class AppComponent implements OnInit, AfterViewChecked {
             message: 'Ohh... Sorry, There was an unexpected error in my system. Could you please send me your message again?',
             response: null,
             url: null,
-            context: null});
+            context: null,
+            categories: []});
         }
       );
     }
@@ -89,6 +92,34 @@ export class AppComponent implements OnInit, AfterViewChecked {
         this.connectionError = true;
       }
     );
+  }
+
+  chooseCategory(category) {
+    const msg = new Message();
+    msg.author = 'user';
+    msg.context = this.conversationService.getConversationContext();
+    msg.message = 'I want a book about ' + category; 
+    this.messageService.sendMessage(msg).subscribe(
+        response => {
+          const responseMsg = response.body;
+          responseMsg.author = 'bot';
+          this.botTyping = false;
+          this.messages.push(responseMsg);
+          if (responseMsg.url) {
+            this.windowRef.location.href = responseMsg.url;
+          }
+        },
+        error => {
+          this.botTyping = false;
+          this.messages.push({
+            author: 'bot',
+            message: 'Ohh... Sorry, There was an unexpected error in my system. Could you please send me your message again?',
+            response: null,
+            url: null,
+            context: null,
+            categories: []});
+        }
+      );
   }
 
   scrollToBottom() {

@@ -23,7 +23,11 @@
             <div *ngFor="let content of msg.response">
               <div class="message-wrapper them">
                 <div class="circle-wrapper"></div>
-                <div class="text-wrapper">{{ content }}</div>
+                <div class="text-wrapper">{{ content }}
+                  <div *ngFor="let category of msg.categories">
+                    <button class="btn-conversation" (click)="chooseCategory(category)">{{ category }}</button>  
+                  </div> 
+                </div>
               </div>
             </div>
           </div>
