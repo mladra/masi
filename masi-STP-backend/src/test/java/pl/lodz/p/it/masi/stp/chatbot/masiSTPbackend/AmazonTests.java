@@ -1,19 +1,16 @@
 package pl.lodz.p.it.masi.stp.chatbot.masiSTPbackend;
 
 import com.ibm.watson.developer_cloud.conversation.v1.model.MessageResponse;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import pl.lodz.p.it.masi.stp.chatbot.entities.MessageDto;
+import pl.lodz.p.it.masi.stp.chatbot.dtos.MessageDto;
 import pl.lodz.p.it.masi.stp.chatbot.services.ConversationServiceImpl;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 
 import static org.junit.Assert.*;
 

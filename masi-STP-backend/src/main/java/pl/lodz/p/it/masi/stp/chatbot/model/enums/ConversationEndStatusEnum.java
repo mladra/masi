@@ -1,4 +1,4 @@
-package pl.lodz.p.it.masi.stp.chatbot.collections;
+package pl.lodz.p.it.masi.stp.chatbot.model.enums;
 
 public enum ConversationEndStatusEnum {
 

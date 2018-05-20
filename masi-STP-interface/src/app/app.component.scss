@@ -426,6 +426,22 @@ $trans: 0.3s ease;
   transition: width 0.2s ease-out, padding-top 0.2s ease-out;
 }
 
+a:link {
+  color: $white;
+}
+
+a:visited {
+  color: $white;
+}
+
+a:hover {
+  color: $accent;
+}
+
+a:active {
+  color: darker($accent, 50%);
+}
+
 @keyframes wave {
   0%,
   60%,

@@ -1,6 +1,7 @@
-package pl.lodz.p.it.masi.stp.chatbot.collections;
+package pl.lodz.p.it.masi.stp.chatbot.model.collections;
 
 import org.springframework.data.mongodb.core.mapping.Document;
+import pl.lodz.p.it.masi.stp.chatbot.model.enums.ConversationEndStatusEnum;
 
 import java.util.List;
 

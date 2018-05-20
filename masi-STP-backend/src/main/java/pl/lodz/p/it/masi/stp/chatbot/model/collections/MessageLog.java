@@ -1,4 +1,4 @@
-package pl.lodz.p.it.masi.stp.chatbot.collections;
+package pl.lodz.p.it.masi.stp.chatbot.model.collections;
 
 import java.sql.Timestamp;
 
@@ -14,14 +14,12 @@ public class MessageLog {
     private String userInput;
     private String watsonIntent;
     private String watsonOutput;
-    private AmazonCriteria criteria;
     private long resultsCount;
 
     public MessageLog(Timestamp angularRequestTimestamp, Timestamp angularResponseTimestamp,
                       Timestamp watsonRequestTimestamp, Timestamp watsonResponseTimestamp,
                       Timestamp amazonRequestTimestamp, Timestamp amazonResponseTimestamp,
-                      String userInput, String watsonIntent, String watsonOutput, AmazonCriteria criteria,
-                      long resultsCount) {
+                      String userInput, String watsonIntent, String watsonOutput, long resultsCount) {
         this.angularRequestTimestamp = angularRequestTimestamp;
         this.angularResponseTimestamp = angularResponseTimestamp;
         this.watsonRequestTimestamp = watsonRequestTimestamp;
@@ -31,7 +29,6 @@ public class MessageLog {
         this.userInput = userInput;
         this.watsonIntent = watsonIntent;
         this.watsonOutput = watsonOutput;
-        this.criteria = criteria;
         this.resultsCount = resultsCount;
     }
 
@@ -105,14 +102,6 @@ public class MessageLog {
 
     public void setWatsonOutput(String watsonOutput) {
         this.watsonOutput = watsonOutput;
-    }
-
-    public AmazonCriteria getCriteria() {
-        return criteria;
-    }
-
-    public void setCriteria(AmazonCriteria criteria) {
-        this.criteria = criteria;
     }
 
     public long getResultsCount() {

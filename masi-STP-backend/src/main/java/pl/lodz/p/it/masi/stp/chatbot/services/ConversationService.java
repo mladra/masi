@@ -1,6 +1,6 @@
 package pl.lodz.p.it.masi.stp.chatbot.services;
 
-import pl.lodz.p.it.masi.stp.chatbot.entities.MessageDto;
+import pl.lodz.p.it.masi.stp.chatbot.dtos.MessageDto;
 
 public interface ConversationService {
 

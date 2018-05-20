@@ -10,7 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.masi.stp.chatbot.amazon.*;
-import pl.lodz.p.it.masi.stp.chatbot.entities.MessageDto;
+import pl.lodz.p.it.masi.stp.chatbot.dtos.MessageDto;
+import pl.lodz.p.it.masi.stp.chatbot.model.enums.CategoriesEnum;
+import pl.lodz.p.it.masi.stp.chatbot.model.enums.SearchKeywordsEnum;
 import pl.lodz.p.it.masi.stp.chatbot.utils.EnumUtils;
 
 import javax.annotation.PostConstruct;
@@ -69,20 +71,33 @@ public class ConversationServiceImpl implements ConversationService {
         ItemSearchRequest itemSearchRequest = new ItemSearchRequest();
         itemSearchRequest.setSearchIndex(CategoriesEnum.BOOKS.getName());
 
-        if (watsonResponse.getEntities().size() >= 1) {
+        if (watsonResponse.getEntities().size() > 0) {
             List<String> entities = watsonResponse.getEntities().stream()
                 .map(RuntimeEntity::getValue).collect(Collectors.toList());
 
+            CategoriesEnum currentCategory = null;
             for (String entity : entities) {
-                CategoriesEnum categoriesEnum = EnumUtils.lookupByName(entity);
+                CategoriesEnum categoriesEnum = (CategoriesEnum) EnumUtils.lookupByName(entity, CategoriesEnum.class);
                 if (categoriesEnum != null) {
-                    itemSearchRequest.setBrowseNode(categoriesEnum.getBrowseNodeId());
+                    if (currentCategory == null) {
+                        currentCategory = categoriesEnum;
+                        itemSearchRequest.setBrowseNode(categoriesEnum.getBrowseNodeId());
+                    } else if (!currentCategory.isSubcategory() && categoriesEnum.isSubcategory()) {
+                        itemSearchRequest.setBrowseNode(categoriesEnum.getBrowseNodeId());
+                    }
+                    continue;
+                }
+
+                SearchKeywordsEnum keywordEnum = (SearchKeywordsEnum) EnumUtils.lookupByName(entity, SearchKeywordsEnum.class);
+                if (keywordEnum != null) {
+                    itemSearchRequest.setKeywords(keywordEnum.getPhrase());
+                    itemSearchRequest.setBrowseNode(keywordEnum.getCategory().getBrowseNodeId());
                     break;
                 }
             }
         }
 
-        ItemSearch ItemElement= new ItemSearch();
+        ItemSearch ItemElement = new ItemSearch();
         ItemElement.setAWSAccessKeyId(amazonAccessKey);
         ItemElement.setAssociateTag(amazonAssociateTag);
         ItemElement.getRequest().add(itemSearchRequest);
@@ -99,6 +114,13 @@ public class ConversationServiceImpl implements ConversationService {
             List<Items> receivedItems = amazonResponse.getItems();
             if (receivedItems != null && receivedItems.size() > 0) {
                 response.setUrl(receivedItems.get(0).getMoreSearchResultsUrl());
+
+                if (itemSearchRequest.getKeywords() != null && !itemSearchRequest.getKeywords().isEmpty()) {
+                    List<Item> items = receivedItems.get(0).getItem();
+                    if (items != null && !items.isEmpty()) {
+                        response.getResponse().add("&link&" + items.get(0).getDetailPageURL());
+                    }
+                }
             }
         }
     }

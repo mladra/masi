@@ -57,6 +57,9 @@ export class AppComponent implements OnInit, AfterViewChecked {
         response => {
           const responseMsg = response.body;
           responseMsg.author = 'bot';
+          responseMsg.categories = this.messageParser.getCategories(responseMsg.response);
+          responseMsg.links = this.messageParser.getLinks(responseMsg.response);
+          responseMsg.response = this.messageParser.getParsedResponse(responseMsg.response);
           this.botTyping = false;
           this.messages.push(responseMsg);
           if (responseMsg.url) {
@@ -71,7 +74,8 @@ export class AppComponent implements OnInit, AfterViewChecked {
             response: null,
             url: null,
             context: null,
-            categories: []});
+            categories: [],
+            links: []});
         }
       );
     }
@@ -84,6 +88,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
       response => {
         const responseMsg = response.body as Message;
         responseMsg.author = 'bot';
+        responseMsg.categories = new Array();
         this.conversationService.setConversationContext(responseMsg.context);
         this.messages.push(responseMsg);
         this.connectionError = false;
@@ -98,7 +103,8 @@ export class AppComponent implements OnInit, AfterViewChecked {
     const msg = new Message();
     msg.author = 'user';
     msg.context = this.conversationService.getConversationContext();
-    msg.message = 'I want a book about ' + category; 
+    msg.message = 'I want a book about ' + category;
+    this.messages.push(msg);
     this.messageService.sendMessage(msg).subscribe(
         response => {
           const responseMsg = response.body;
@@ -117,7 +123,8 @@ export class AppComponent implements OnInit, AfterViewChecked {
             response: null,
             url: null,
             context: null,
-            categories: []});
+            categories: [],
+            links: []});
         }
       );
   }

@@ -6,23 +6,49 @@ export class MessageParser {
 
   constructor() { }
 
-  getCategories(message: string) {
-    let output: string[] = [];
-    const parts: string[] = message.split(' ');
-    for (const part of parts) {
-      if (part.startsWith('#')) {
-        output.push(part.replace('#', ''));
+  getCategories(messages: string[]) {
+    const output: string[][] = new Array();
+    for (const message of messages) {
+      const categories = [];
+      const parts: string[] = message.split(' ');
+      for (const part of parts) {
+        if (part.startsWith('&')) {
+          let cat = part.replace(/&/g, '');
+          cat = cat.replace(/_/g, ' ');
+          categories.push(cat);
+        }
       }
+      output.push(categories);
     }
     return output;
   }
 
-  getParsedMessage(message) {
-    let output: string = '';
-    const parts: string[] = message.split(' ');
-    for (let part of parts) {
-      if (!part.startsWith('#')) {
-        output += ' ' + part;
+  getLinks(messages: string[]) {
+    const links: string[] = new Array();
+    for (const message of messages) {
+      const parts: string[] = message.split(' ');
+      for (const part of parts) {
+        if (part.startsWith('&link&')) {
+          const link = part.replace(/&link&/g, '');
+          links.push(link);
+        }
+      }
+    }
+    return links;
+  }
+
+  getParsedResponse(messages: string[]) {
+    const output: string[] = [];
+    for (const message of messages) {
+      let singleMessage = '';
+      const parts: string[] = message.split(' ');
+      for (const part of parts) {
+        if (!part.startsWith('&')) {
+          singleMessage += ' ' + part;
+        }
+      }
+      if (singleMessage.length > 0) {
+        output.push(singleMessage);
       }
     }
     return output;

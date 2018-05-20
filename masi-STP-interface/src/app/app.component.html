@@ -20,19 +20,31 @@
             </div>
           </div>
           <div *ngIf="msg.author === 'bot'">
-            <div *ngFor="let content of msg.response">
+            <div *ngFor="let content of msg.response; let i = index;">
               <div class="message-wrapper them">
                 <div class="circle-wrapper"></div>
                 <div class="text-wrapper">{{ content }}
-                  <div *ngFor="let category of msg.categories">
-                    <button class="btn-conversation" (click)="chooseCategory(category)">{{ category }}</button>  
-                  </div> 
+                  <div *ngIf="msg.categories">
+                    <div *ngFor="let category of msg.categories[i]">
+                      <button class="btn-conversation" (click)="chooseCategory(category)">{{ category }}</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="msg.links">
+              <div *ngFor="let link of msg.links; let i = index;">
+                <div class="message-wrapper them">
+                  <div class="circle-wrapper"></div>
+                  <div class="text-wrapper">
+                    <a class="link" href="{{link}}">Recommended product details {{ i + 1 }}</a>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
         <div *ngIf="botTyping">
           <div class="message-wrapper them">
             <div class="circle-wrapper"></div>
