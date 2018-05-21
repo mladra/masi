@@ -6,6 +6,6 @@ public enum ConversationEndStatusEnum {
     END_BY_USER,
     WATSON_ERROR,
     AMAZON_ERROR,
-    UNKNOWN_ERROR;
+    UNKNOWN_ERROR
 
 }

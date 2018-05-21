@@ -1,26 +1,26 @@
 package pl.lodz.p.it.masi.stp.chatbot.collections;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class MessageLog {
 
-    private Timestamp angularRequestTimestamp;
-    private Timestamp angularResponseTimestamp;
-    private Timestamp watsonRequestTimestamp;
-    private Timestamp watsonResponseTimestamp;
-    private Timestamp amazonRequestTimestamp;
-    private Timestamp amazonResponseTimestamp;
+    private LocalDateTime angularRequestTimestamp;
+    private LocalDateTime angularResponseTimestamp;
+    private LocalDateTime watsonRequestTimestamp;
+    private LocalDateTime watsonResponseTimestamp;
+    private LocalDateTime amazonRequestTimestamp;
+    private LocalDateTime amazonResponseTimestamp;
 
     private String userInput;
     private String watsonIntent;
-    private String watsonOutput;
-    private AmazonCriteria criteria;
+    private List<String> watsonOutput;
     private long resultsCount;
 
-    public MessageLog(Timestamp angularRequestTimestamp, Timestamp angularResponseTimestamp,
-                      Timestamp watsonRequestTimestamp, Timestamp watsonResponseTimestamp,
-                      Timestamp amazonRequestTimestamp, Timestamp amazonResponseTimestamp,
-                      String userInput, String watsonIntent, String watsonOutput, AmazonCriteria criteria,
+    public MessageLog(LocalDateTime angularRequestTimestamp, LocalDateTime angularResponseTimestamp,
+                      LocalDateTime watsonRequestTimestamp, LocalDateTime watsonResponseTimestamp,
+                      LocalDateTime amazonRequestTimestamp, LocalDateTime amazonResponseTimestamp,
+                      String userInput, String watsonIntent, List<String> watsonOutput,
                       long resultsCount) {
         this.angularRequestTimestamp = angularRequestTimestamp;
         this.angularResponseTimestamp = angularResponseTimestamp;
@@ -31,55 +31,58 @@ public class MessageLog {
         this.userInput = userInput;
         this.watsonIntent = watsonIntent;
         this.watsonOutput = watsonOutput;
-        this.criteria = criteria;
         this.resultsCount = resultsCount;
     }
 
-    public Timestamp getAngularRequestTimestamp() {
+    public MessageLog() {
+
+    }
+
+    public LocalDateTime getAngularRequestTimestamp() {
         return angularRequestTimestamp;
     }
 
-    public void setAngularRequestTimestamp(Timestamp angularRequestTimestamp) {
+    public void setAngularRequestTimestamp(LocalDateTime angularRequestTimestamp) {
         this.angularRequestTimestamp = angularRequestTimestamp;
     }
 
-    public Timestamp getAngularResponseTimestamp() {
+    public LocalDateTime getAngularResponseTimestamp() {
         return angularResponseTimestamp;
     }
 
-    public void setAngularResponseTimestamp(Timestamp angularResponseTimestamp) {
+    public void setAngularResponseTimestamp(LocalDateTime angularResponseTimestamp) {
         this.angularResponseTimestamp = angularResponseTimestamp;
     }
 
-    public Timestamp getWatsonRequestTimestamp() {
+    public LocalDateTime getWatsonRequestTimestamp() {
         return watsonRequestTimestamp;
     }
 
-    public void setWatsonRequestTimestamp(Timestamp watsonRequestTimestamp) {
+    public void setWatsonRequestTimestamp(LocalDateTime watsonRequestTimestamp) {
         this.watsonRequestTimestamp = watsonRequestTimestamp;
     }
 
-    public Timestamp getWatsonResponseTimestamp() {
+    public LocalDateTime getWatsonResponseTimestamp() {
         return watsonResponseTimestamp;
     }
 
-    public void setWatsonResponseTimestamp(Timestamp watsonResponseTimestamp) {
+    public void setWatsonResponseTimestamp(LocalDateTime watsonResponseTimestamp) {
         this.watsonResponseTimestamp = watsonResponseTimestamp;
     }
 
-    public Timestamp getAmazonRequestTimestamp() {
+    public LocalDateTime getAmazonRequestTimestamp() {
         return amazonRequestTimestamp;
     }
 
-    public void setAmazonRequestTimestamp(Timestamp amazonRequestTimestamp) {
+    public void setAmazonRequestTimestamp(LocalDateTime amazonRequestTimestamp) {
         this.amazonRequestTimestamp = amazonRequestTimestamp;
     }
 
-    public Timestamp getAmazonResponseTimestamp() {
+    public LocalDateTime getAmazonResponseTimestamp() {
         return amazonResponseTimestamp;
     }
 
-    public void setAmazonResponseTimestamp(Timestamp amazonResponseTimestamp) {
+    public void setAmazonResponseTimestamp(LocalDateTime amazonResponseTimestamp) {
         this.amazonResponseTimestamp = amazonResponseTimestamp;
     }
 
@@ -99,20 +102,12 @@ public class MessageLog {
         this.watsonIntent = watsonIntent;
     }
 
-    public String getWatsonOutput() {
+    public List<String> getWatsonOutput() {
         return watsonOutput;
     }
 
-    public void setWatsonOutput(String watsonOutput) {
+    public void setWatsonOutput(List<String> watsonOutput) {
         this.watsonOutput = watsonOutput;
-    }
-
-    public AmazonCriteria getCriteria() {
-        return criteria;
-    }
-
-    public void setCriteria(AmazonCriteria criteria) {
-        this.criteria = criteria;
     }
 
     public long getResultsCount() {
