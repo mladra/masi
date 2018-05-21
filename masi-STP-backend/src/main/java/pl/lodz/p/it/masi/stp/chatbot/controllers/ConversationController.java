@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import pl.lodz.p.it.masi.stp.chatbot.entities.MessageDto;
 import pl.lodz.p.it.masi.stp.chatbot.services.ConversationService;
 
+import javax.servlet.http.HttpServletRequest;
+
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/chat")

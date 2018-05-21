@@ -1,25 +1,34 @@
 package pl.lodz.p.it.masi.stp.chatbot.services;
 
 import com.ibm.watson.developer_cloud.conversation.v1.Conversation;
-import com.ibm.watson.developer_cloud.conversation.v1.model.InputData;
-import com.ibm.watson.developer_cloud.conversation.v1.model.MessageOptions;
-import com.ibm.watson.developer_cloud.conversation.v1.model.MessageResponse;
-import com.ibm.watson.developer_cloud.conversation.v1.model.RuntimeEntity;
+import com.ibm.watson.developer_cloud.conversation.v1.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import pl.lodz.p.it.masi.stp.chatbot.amazon.*;
+import pl.lodz.p.it.masi.stp.chatbot.collections.ConversationLog;
+import pl.lodz.p.it.masi.stp.chatbot.collections.MessageLog;
 import pl.lodz.p.it.masi.stp.chatbot.entities.MessageDto;
+import pl.lodz.p.it.masi.stp.chatbot.repositories.ConversationLogsRepository;
 import pl.lodz.p.it.masi.stp.chatbot.utils.EnumUtils;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.ws.WebServiceException;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class ConversationServiceImpl implements ConversationService {
+
+    private final ConversationLogsRepository conversationLogsRepository;
 
     private static Logger logger = LoggerFactory.getLogger(ConversationServiceImpl.class);
 
@@ -46,6 +55,11 @@ public class ConversationServiceImpl implements ConversationService {
     @Value("${watson.endpoint}")
     private String watsonEndpoint;
 
+    @Autowired
+    public ConversationServiceImpl(ConversationLogsRepository conversationLogsRepository) {
+        this.conversationLogsRepository = conversationLogsRepository;
+    }
+
     @PostConstruct
     public void initialize() {
         conversation = new Conversation(watsonVersionDate, watsonUsername, watsonPassword);
@@ -55,12 +69,31 @@ public class ConversationServiceImpl implements ConversationService {
     @Override
     public MessageDto processMessage(MessageDto requestMsg) {
         MessageDto responseMsg = new MessageDto();
-        MessageResponse watsonResponse = getWatsonResponse(requestMsg, responseMsg);
-        getAmazonResponse(requestMsg, responseMsg, watsonResponse);
+        MessageLog messageLog = new MessageLog();
+        messageLog.setUserInput(requestMsg.getMessage());
+        if (requestMsg.getContext() != null) {
+            ConversationLog conversationLog = conversationLogsRepository.findByConversationId(requestMsg.getContext().getConversationId());
+            if (conversationLog == null) {
+                conversationLog = new ConversationLog();
+                conversationLog.setConversationId(requestMsg.getContext().getConversationId());
+                conversationLog.setQuestionsCounter(1L);
+                conversationLog.setMisunderstoodQuestionsCounter(0L);
+                HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+                conversationLog.setUserIp(request.getRemoteAddr());
+                conversationLog.setMessagesLogs(new ArrayList<>());
+            }
+            MessageResponse watsonResponse = getWatsonResponse(requestMsg, responseMsg, conversationLog, messageLog);
+            getAmazonResponse(requestMsg, responseMsg, watsonResponse, messageLog);
+            conversationLog.getMessagesLogs().add(messageLog);
+            conversationLogsRepository.save(conversationLog);
+        } else {
+            MessageResponse watsonResponse = getWatsonResponse(requestMsg, responseMsg, null, null);
+            getAmazonResponse(requestMsg, responseMsg, watsonResponse, null);
+        }
         return responseMsg;
     }
 
-    public void getAmazonResponse(MessageDto request, MessageDto response, MessageResponse watsonResponse) {
+    public void getAmazonResponse(MessageDto request, MessageDto response, MessageResponse watsonResponse, MessageLog messageLog) {
         AWSECommerceService service = new AWSECommerceService();
         service.setHandlerResolver(new AwsHandlerResolver(amazonSecretKey));
 
@@ -98,12 +131,19 @@ public class ConversationServiceImpl implements ConversationService {
             logger.info(amazonResponse.toString());
             List<Items> receivedItems = amazonResponse.getItems();
             if (receivedItems != null && receivedItems.size() > 0) {
+                if (messageLog != null) {
+                    if (receivedItems.get(0).getTotalResults() != null) {
+                        messageLog.setResultsCount(receivedItems.get(0).getTotalResults());
+                    } else {
+                        messageLog.setResultsCount(BigInteger.ONE);
+                    }
+                }
                 response.setUrl(receivedItems.get(0).getMoreSearchResultsUrl());
             }
         }
     }
 
-    public MessageResponse getWatsonResponse(MessageDto request, MessageDto response) {
+    public MessageResponse getWatsonResponse(MessageDto request, MessageDto response, ConversationLog conversationLog, MessageLog messageLog) {
         String workspaceId = "fb1afa02-f113-446c-ba28-a86992500910";
         InputData input = new InputData.Builder(request.getMessage()).build();
         MessageOptions options = new MessageOptions.Builder(workspaceId)
@@ -111,6 +151,24 @@ public class ConversationServiceImpl implements ConversationService {
                 .context(request.getContext())
                 .build();
         MessageResponse watsonResponse = conversation.message(options).execute();
+
+        if (messageLog != null && conversationLog != null) {
+            List<String> intents = new ArrayList<>();
+            for (RuntimeIntent intent :
+                    watsonResponse.getIntents()) {
+                intents.add(intent.getIntent());
+            }
+            messageLog.setWatsonIntent(intents);
+            messageLog.setWatsonOutput(watsonResponse.getOutput().getText());
+
+            List<String> nodesVisited = watsonResponse.getOutput().getNodesVisited();
+            if (nodesVisited.size() == 1 && nodesVisited.get(0).equals("Anything else")) {
+                conversationLog.incrementMisunderstoodQuestionsCounter();
+            } else {
+                conversationLog.incrementQuestionsCounter();
+            }
+        }
+
         response.setContext(watsonResponse.getContext());
         response.setResponse(watsonResponse.getOutput().getText());
         logger.info(response.toString());
