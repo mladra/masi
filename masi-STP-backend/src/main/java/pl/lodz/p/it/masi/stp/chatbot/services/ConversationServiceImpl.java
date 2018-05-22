@@ -164,7 +164,7 @@ public class ConversationServiceImpl implements ConversationService {
             List<String> nodesVisited = watsonResponse.getOutput().getNodesVisited();
             if (nodesVisited.size() == 1 && nodesVisited.get(0).equals("Anything else")) {
                 conversationLog.incrementMisunderstoodQuestionsCounter();
-            } else {
+            } else if (conversationLog.getMessagesLogs().size() != 0) {
                 conversationLog.incrementQuestionsCounter();
             }
         }
