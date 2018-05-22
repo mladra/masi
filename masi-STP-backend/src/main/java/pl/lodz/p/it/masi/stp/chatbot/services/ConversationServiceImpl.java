@@ -135,7 +135,7 @@ public class ConversationServiceImpl implements ConversationService {
                     if (receivedItems.get(0).getTotalResults() != null) {
                         messageLog.setResultsCount(receivedItems.get(0).getTotalResults());
                     } else {
-                        messageLog.setResultsCount(BigInteger.ONE);
+                        messageLog.setResultsCount(BigInteger.ZERO);
                     }
                 }
                 response.setUrl(receivedItems.get(0).getMoreSearchResultsUrl());
