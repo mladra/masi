@@ -22,7 +22,6 @@ import javax.xml.ws.WebServiceException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +32,19 @@ public class ConversationServiceImpl implements ConversationService {
     private static Logger logger = LoggerFactory.getLogger(ConversationServiceImpl.class);
 
     private Conversation conversation;
+
+    private static final String[] IP_HEADER_CANDIDATES = {
+            "X-Forwarded-For",
+            "Proxy-Client-IP",
+            "WL-Proxy-Client-IP",
+            "HTTP_X_FORWARDED_FOR",
+            "HTTP_X_FORWARDED",
+            "HTTP_X_CLUSTER_CLIENT_IP",
+            "HTTP_CLIENT_IP",
+            "HTTP_FORWARDED_FOR",
+            "HTTP_FORWARDED",
+            "HTTP_VIA",
+            "REMOTE_ADDR" };
 
     @Value("${amazon.secret.key}")
     private String amazonSecretKey;
@@ -79,7 +91,7 @@ public class ConversationServiceImpl implements ConversationService {
                 conversationLog.setQuestionsCounter(1L);
                 conversationLog.setMisunderstoodQuestionsCounter(0L);
                 HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-                conversationLog.setUserIp(request.getRemoteAddr());
+                conversationLog.setUserIp(getClientIpAddress(request));
                 conversationLog.setMessagesLogs(new ArrayList<>());
             }
             MessageResponse watsonResponse = getWatsonResponse(requestMsg, responseMsg, conversationLog, messageLog);
@@ -173,5 +185,15 @@ public class ConversationServiceImpl implements ConversationService {
         response.setResponse(watsonResponse.getOutput().getText());
         logger.info(response.toString());
         return watsonResponse;
+    }
+
+    private static String getClientIpAddress(HttpServletRequest request) {
+        for (String header : IP_HEADER_CANDIDATES) {
+            String ip = request.getHeader(header);
+            if (ip != null && ip.length() != 0 && !"unknown".equalsIgnoreCase(ip)) {
+                return ip;
+            }
+        }
+        return request.getRemoteAddr();
     }
 }

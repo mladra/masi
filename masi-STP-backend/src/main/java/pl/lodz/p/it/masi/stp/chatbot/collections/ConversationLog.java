@@ -17,8 +17,8 @@ public class ConversationLog {
     private List<MessageLog> messagesLogs;
     private Long questionsCounter;
     private Long misunderstoodQuestionsCounter;
-    private Long chatbotUsabilityScore;
-    private Long chatbotEffectivenessScore;
+    private String chatbotUsabilityScore;
+    private String chatbotEffectivenessScore;
 
     public ConversationLog(ConversationEndStatusEnum endStatus, List<MessageLog> messagesLogs) {
         this.endStatus = endStatus;
@@ -94,19 +94,19 @@ public class ConversationLog {
         this.misunderstoodQuestionsCounter = misunderstoodQuestionsCounter;
     }
 
-    public Long getChatbotUsabilityScore() {
+    public String getChatbotUsabilityScore() {
         return chatbotUsabilityScore;
     }
 
-    public void setChatbotUsabilityScore(Long chatbotUsabilityScore) {
+    public void setChatbotUsabilityScore(String chatbotUsabilityScore) {
         this.chatbotUsabilityScore = chatbotUsabilityScore;
     }
 
-    public Long getChatbotEffectivenessScore() {
+    public String getChatbotEffectivenessScore() {
         return chatbotEffectivenessScore;
     }
 
-    public void setChatbotEffectivenessScore(Long chatbotEffectivenessScore) {
+    public void setChatbotEffectivenessScore(String chatbotEffectivenessScore) {
         this.chatbotEffectivenessScore = chatbotEffectivenessScore;
     }
 }
