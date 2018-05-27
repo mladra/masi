@@ -1,10 +1,10 @@
 package pl.lodz.p.it.masi.stp.chatbot.services;
 
 import com.ibm.watson.developer_cloud.conversation.v1.Conversation;
-import com.ibm.watson.developer_cloud.conversation.v1.model.*;
 import com.ibm.watson.developer_cloud.conversation.v1.model.InputData;
 import com.ibm.watson.developer_cloud.conversation.v1.model.MessageOptions;
 import com.ibm.watson.developer_cloud.conversation.v1.model.MessageResponse;
+import com.ibm.watson.developer_cloud.conversation.v1.model.RuntimeIntent;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -15,13 +15,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import pl.lodz.p.it.masi.stp.chatbot.amazon.*;
-import pl.lodz.p.it.masi.stp.chatbot.model.collections.logs.ConversationLog;
-import pl.lodz.p.it.masi.stp.chatbot.model.collections.logs.MessageLog;
-import pl.lodz.p.it.masi.stp.chatbot.repositories.ConversationLogsRepository;
 import pl.lodz.p.it.masi.stp.chatbot.dtos.MessageDto;
 import pl.lodz.p.it.masi.stp.chatbot.model.collections.conversation.ConversationHelper;
+import pl.lodz.p.it.masi.stp.chatbot.model.collections.logs.ConversationLog;
+import pl.lodz.p.it.masi.stp.chatbot.model.collections.logs.MessageLog;
 import pl.lodz.p.it.masi.stp.chatbot.model.enums.*;
 import pl.lodz.p.it.masi.stp.chatbot.repositories.ConversationHelpersRepository;
+import pl.lodz.p.it.masi.stp.chatbot.repositories.ConversationLogsRepository;
 import pl.lodz.p.it.masi.stp.chatbot.utils.CategoryUtils;
 import pl.lodz.p.it.masi.stp.chatbot.utils.EnumUtils;
 
@@ -273,5 +273,31 @@ public class ConversationServiceImpl implements ConversationService {
             }
         }
         return request.getRemoteAddr();
+    }
+
+    @Override
+    public void evaluateUsability(MessageDto messageDto) {
+        String conversationId = messageDto.getContext().getConversationId();
+        ConversationLog conversationLog = conversationLogsRepository.findByConversationId(conversationId);
+
+        if (conversationLog != null) {
+            conversationLog.setChatbotUsabilityScore(messageDto.getMessage());
+            conversationLogsRepository.save(conversationLog);
+        } else {
+            logger.error("Couldn't find ConversationLog for conversation with id " + conversationId);
+        }
+    }
+
+    @Override
+    public void evaluateSatisfaction(MessageDto messageDto) {
+        String conversationId = messageDto.getContext().getConversationId();
+        ConversationLog conversationLog = conversationLogsRepository.findByConversationId(conversationId);
+
+        if (conversationLog != null) {
+            conversationLog.setChatbotEffectivenessScore(messageDto.getMessage());
+            conversationLogsRepository.save(conversationLog);
+        } else {
+            logger.error("Couldn't find ConversationLog for conversation with id " + conversationId);
+        }
     }
 }

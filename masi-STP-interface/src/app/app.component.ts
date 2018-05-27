@@ -1,8 +1,8 @@
-import { Component, OnInit, AfterViewChecked, ViewChild, ElementRef } from '@angular/core';
-import { Message } from './models/message';
-import { ConversationService } from './services/conversation.service';
-import { MessageService } from './services/message.service';
-import { MessageParser } from './services/message.parser';
+import {AfterViewChecked, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Message} from './models/message';
+import {ConversationService} from './services/conversation.service';
+import {MessageService} from './services/message.service';
+import {MessageParser} from './services/message.parser';
 
 @Component({
   selector: 'app-root',
@@ -169,17 +169,41 @@ export class AppComponent implements OnInit, AfterViewChecked {
   }
 
   evaluateUsability(score) {
-    this.pushSingleScoreMessage(score);
-
-    const message2 = new Message();
-    message2.author = 'bot';
-    message2.context = this.conversationService.getConversationContext();
-    message2.response = ['How are you satisfied with chatbot help?'];
-    this.messages.push(message2);
+    const message = this.pushSingleScoreMessage(score);
+    this.botTyping = true;
+    this.messageService.evaluateUsability(message).subscribe(
+      response => {
+        const message2 = new Message();
+        message2.author = 'bot';
+        message2.context = this.conversationService.getConversationContext();
+        message2.response = ['How are you satisfied with chatbot help?'];
+        this.botTyping = false;
+        this.messages.push(message2);
+      },
+      error => {
+        this.botTyping = false;
+        console.log(error);
+      }
+    );
   }
 
   evaluateSatisfaction(score) {
-    const msg = this.pushSingleScoreMessage(score);
+    const message = this.pushSingleScoreMessage(score);
+    this.botTyping = true;
+    this.messageService.evaluateSatisfaction(message).subscribe(
+      response => {
+        const message2 = new Message();
+        message2.author = 'bot';
+        message2.context = this.conversationService.getConversationContext();
+        message2.response = ['Thank you for your ratings. We really appreciate your help.'];
+        this.botTyping = false;
+        this.messages.push(message2);
+      },
+      error => {
+        this.botTyping = false;
+        console.log(error);
+      }
+    );
   }
 
   pushSingleScoreMessage(score) {

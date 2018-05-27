@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-import { Button } from 'protractor';
+import {Injectable} from '@angular/core';
 
 @Injectable()
 export class MessageParser {
@@ -29,7 +28,6 @@ export class MessageParser {
     const output: string[] = [];
     for (const message of messages) {
       let singleMessage = '';
-      console.log(message);
       if (message === '**') {
         output.push('How useful was this conversation?');
       } else {
