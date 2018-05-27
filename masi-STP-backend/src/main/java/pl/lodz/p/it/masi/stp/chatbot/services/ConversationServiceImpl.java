@@ -1,6 +1,7 @@
 package pl.lodz.p.it.masi.stp.chatbot.services;
 
 import com.ibm.watson.developer_cloud.conversation.v1.Conversation;
+import com.ibm.watson.developer_cloud.conversation.v1.model.*;
 import com.ibm.watson.developer_cloud.conversation.v1.model.InputData;
 import com.ibm.watson.developer_cloud.conversation.v1.model.MessageOptions;
 import com.ibm.watson.developer_cloud.conversation.v1.model.MessageResponse;
@@ -11,7 +12,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import pl.lodz.p.it.masi.stp.chatbot.amazon.*;
+import pl.lodz.p.it.masi.stp.chatbot.collections.ConversationLog;
+import pl.lodz.p.it.masi.stp.chatbot.collections.MessageLog;
+import pl.lodz.p.it.masi.stp.chatbot.entities.MessageDto;
+import pl.lodz.p.it.masi.stp.chatbot.repositories.ConversationLogsRepository;
 import pl.lodz.p.it.masi.stp.chatbot.dtos.MessageDto;
 import pl.lodz.p.it.masi.stp.chatbot.model.collections.conversation.ConversationHelper;
 import pl.lodz.p.it.masi.stp.chatbot.model.enums.*;
@@ -20,7 +27,10 @@ import pl.lodz.p.it.masi.stp.chatbot.utils.CategoryUtils;
 import pl.lodz.p.it.masi.stp.chatbot.utils.EnumUtils;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.ws.WebServiceException;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,6 +40,21 @@ import java.util.stream.Collectors;
 public class ConversationServiceImpl implements ConversationService {
 
     private static Logger logger = LoggerFactory.getLogger(ConversationServiceImpl.class);
+
+    private static final String[] IP_HEADER_CANDIDATES = {
+            "X-Forwarded-For",
+            "Proxy-Client-IP",
+            "WL-Proxy-Client-IP",
+            "HTTP_X_FORWARDED_FOR",
+            "HTTP_X_FORWARDED",
+            "HTTP_X_CLUSTER_CLIENT_IP",
+            "HTTP_CLIENT_IP",
+            "HTTP_FORWARDED_FOR",
+            "HTTP_FORWARDED",
+            "HTTP_VIA",
+            "REMOTE_ADDR" };
+
+    private final ConversationLogsRepository conversationLogsRepository;
 
     private final ConversationHelpersRepository helpers;
 
@@ -57,8 +82,9 @@ public class ConversationServiceImpl implements ConversationService {
     private String watsonEndpoint;
 
     @Autowired
-    public ConversationServiceImpl(ConversationHelpersRepository helpers) {
+    public ConversationServiceImpl(ConversationHelpersRepository helpers, ConversationLogsRepository conversationLogsRepository) {
         this.helpers = helpers;
+        this.conversationLogsRepository = conversationLogsRepository;
     }
 
     @PostConstruct
@@ -70,12 +96,32 @@ public class ConversationServiceImpl implements ConversationService {
     @Override
     public MessageDto processMessage(MessageDto requestMsg) {
         MessageDto responseMsg = new MessageDto();
-        MessageResponse watsonResponse = getWatsonResponse(requestMsg, responseMsg);
-        getAmazonResponse(responseMsg, watsonResponse);
+        MessageLog messageLog = new MessageLog();
+        messageLog.setUserInput(requestMsg.getMessage());
+        if (requestMsg.getContext() != null) {
+            ConversationLog conversationLog = conversationLogsRepository.findByConversationId(requestMsg.getContext().getConversationId());
+            if (conversationLog == null) {
+                conversationLog = new ConversationLog();
+                conversationLog.setConversationId(requestMsg.getContext().getConversationId());
+                conversationLog.setQuestionsCounter(1L);
+                conversationLog.setMisunderstoodQuestionsCounter(0L);
+                HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+                conversationLog.setUserIp(getClientIpAddress(request));
+                conversationLog.setMessagesLogs(new ArrayList<>());
+            }
+            MessageResponse watsonResponse = getWatsonResponse(requestMsg, responseMsg, conversationLog, messageLog);
+            getAmazonResponse(requestMsg, responseMsg, watsonResponse, messageLog);
+            conversationLog.getMessagesLogs().add(messageLog);
+            conversationLogsRepository.save(conversationLog);
+        } else {
+            MessageResponse watsonResponse = getWatsonResponse(requestMsg, responseMsg, null, null);
+            getAmazonResponse(requestMsg, responseMsg, watsonResponse, null);
+        }
+
         return responseMsg;
     }
 
-    public MessageResponse getWatsonResponse(MessageDto request, MessageDto response) {
+    public MessageResponse getWatsonResponse(MessageDto request, MessageDto response, ConversationLog conversationLog, MessageLog messageLog) {
         String workspaceId = "fb1afa02-f113-446c-ba28-a86992500910";
         InputData input = new InputData.Builder(request.getMessage()).build();
         MessageOptions options = new MessageOptions.Builder(workspaceId)
@@ -83,13 +129,30 @@ public class ConversationServiceImpl implements ConversationService {
                 .context(request.getContext())
                 .build();
         MessageResponse watsonResponse = conversation.message(options).execute();
+
+        if (messageLog != null && conversationLog != null) {
+            List<String> intents = new ArrayList<>();
+            for (RuntimeIntent intent : watsonResponse.getIntents()) {
+                intents.add(intent.getIntent());
+            }
+            messageLog.setWatsonIntent(intents);
+            messageLog.setWatsonOutput(watsonResponse.getOutput().getText());
+
+            List<String> nodesVisited = watsonResponse.getOutput().getNodesVisited();
+            if (nodesVisited.size() == 1 && nodesVisited.get(0).equals("Anything else")) {
+                conversationLog.incrementMisunderstoodQuestionsCounter();
+            } else if (conversationLog.getMessagesLogs().size() != 0) {
+                conversationLog.incrementQuestionsCounter();
+            }
+        }
+
         response.setContext(watsonResponse.getContext());
         response.setResponse(watsonResponse.getOutput().getText());
         logger.info(response.toString());
         return watsonResponse;
     }
 
-    public void getAmazonResponse(MessageDto response, MessageResponse watsonResponse) {
+    public void getAmazonResponse(MessageDto response, MessageResponse watsonResponse, MessageLog messageLog) {
         ConversationHelper currentConversationHelper = createOrLoadConversationHelper(
                 watsonResponse.getContext().getConversationId()
         );
@@ -104,7 +167,7 @@ public class ConversationServiceImpl implements ConversationService {
         setCategory(currentConversationHelper, categories);
         ItemSearchRequest itemSearchRequest = createItemSearchRequest(currentConversationHelper, authors, titles, keywords, sorts);
         ItemSearchResponse amazonResponse = getItemSearchResponse(itemSearchRequest);
-        setResponseUrl(response, itemSearchRequest, amazonResponse);
+        setResponseUrl(response, itemSearchRequest, amazonResponse, messageLog);
     }
 
     private ConversationHelper createOrLoadConversationHelper(String conversationId) {
@@ -171,7 +234,7 @@ public class ConversationServiceImpl implements ConversationService {
         return amazonResponse;
     }
 
-    private void setResponseUrl(MessageDto response, ItemSearchRequest itemSearchRequest, ItemSearchResponse amazonResponse) {
+    private void setResponseUrl(MessageDto response, ItemSearchRequest itemSearchRequest, ItemSearchResponse amazonResponse, MessageLog messageLog) {
         if (amazonResponse != null) {
             logger.info(amazonResponse.toString());
             List<Items> receivedItems = amazonResponse.getItems();
@@ -182,15 +245,31 @@ public class ConversationServiceImpl implements ConversationService {
                     List<Item> items = receivedItems.get(0).getItem();
                     if (CollectionUtils.isNotEmpty(items)) {
                         response.setUrl(items.get(0).getDetailPageURL());
+                        if (messageLog != null) {
+                            messageLog.setResultsCount(items.get(0).getTotalResults());
+                        }
                     } else {
                         response.setUrl(receivedItems.get(0).getMoreSearchResultsUrl());
                         response.getResponse().clear();
                         response.getResponse().add("I am sorry, but i couldn't find what you are looking for. Try other keyword, title or author.");
+                        if (messageLog != null) {
+                            messageLog.setResultsCount(BigInteger.ZERO);
+                        }
                     }
                 } else {
                     response.setUrl(receivedItems.get(0).getMoreSearchResultsUrl());
                 }
             }
         }
+    }
+
+    private static String getClientIpAddress(HttpServletRequest request) {
+        for (String header : IP_HEADER_CANDIDATES) {
+            String ip = request.getHeader(header);
+            if (ip != null && ip.length() != 0 && !"unknown".equalsIgnoreCase(ip)) {
+                return ip;
+            }
+        }
+        return request.getRemoteAddr();
     }
 }
