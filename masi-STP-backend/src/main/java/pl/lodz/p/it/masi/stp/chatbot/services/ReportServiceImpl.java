@@ -1,11 +1,14 @@
 package pl.lodz.p.it.masi.stp.chatbot.services;
 
-import com.itextpdf.text.*;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.lodz.p.it.masi.stp.chatbot.model.collections.logs.ConversationLog;
-import pl.lodz.p.it.masi.stp.chatbot.model.collections.logs.MessageLog;
+import pl.lodz.p.it.masi.stp.chatbot.model.collections.logging.ConversationLog;
+import pl.lodz.p.it.masi.stp.chatbot.model.collections.logging.MessageLog;
 import pl.lodz.p.it.masi.stp.chatbot.repositories.ConversationLogsRepository;
 
 import java.io.ByteArrayOutputStream;
