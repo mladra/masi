@@ -15,9 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import pl.lodz.p.it.masi.stp.chatbot.amazon.*;
-import pl.lodz.p.it.masi.stp.chatbot.collections.ConversationLog;
-import pl.lodz.p.it.masi.stp.chatbot.collections.MessageLog;
-import pl.lodz.p.it.masi.stp.chatbot.entities.MessageDto;
+import pl.lodz.p.it.masi.stp.chatbot.model.collections.logs.ConversationLog;
+import pl.lodz.p.it.masi.stp.chatbot.model.collections.logs.MessageLog;
 import pl.lodz.p.it.masi.stp.chatbot.repositories.ConversationLogsRepository;
 import pl.lodz.p.it.masi.stp.chatbot.dtos.MessageDto;
 import pl.lodz.p.it.masi.stp.chatbot.model.collections.conversation.ConversationHelper;
@@ -110,12 +109,12 @@ public class ConversationServiceImpl implements ConversationService {
                 conversationLog.setMessagesLogs(new ArrayList<>());
             }
             MessageResponse watsonResponse = getWatsonResponse(requestMsg, responseMsg, conversationLog, messageLog);
-            getAmazonResponse(requestMsg, responseMsg, watsonResponse, messageLog);
+            getAmazonResponse(responseMsg, watsonResponse, messageLog);
             conversationLog.getMessagesLogs().add(messageLog);
             conversationLogsRepository.save(conversationLog);
         } else {
             MessageResponse watsonResponse = getWatsonResponse(requestMsg, responseMsg, null, null);
-            getAmazonResponse(requestMsg, responseMsg, watsonResponse, null);
+            getAmazonResponse(responseMsg, watsonResponse, null);
         }
 
         return responseMsg;
@@ -239,27 +238,30 @@ public class ConversationServiceImpl implements ConversationService {
             logger.info(amazonResponse.toString());
             List<Items> receivedItems = amazonResponse.getItems();
             if (CollectionUtils.isNotEmpty(receivedItems)) {
+                logResultsCount(messageLog, receivedItems.get(0).getTotalResults());
                 if (StringUtils.isNoneEmpty(itemSearchRequest.getKeywords())
                         || StringUtils.isNoneEmpty(itemSearchRequest.getTitle())
                         || StringUtils.isNoneEmpty(itemSearchRequest.getSort())) {
                     List<Item> items = receivedItems.get(0).getItem();
                     if (CollectionUtils.isNotEmpty(items)) {
                         response.setUrl(items.get(0).getDetailPageURL());
-                        if (messageLog != null) {
-                            messageLog.setResultsCount(items.get(0).getTotalResults());
-                        }
                     } else {
                         response.setUrl(receivedItems.get(0).getMoreSearchResultsUrl());
                         response.getResponse().clear();
                         response.getResponse().add("I am sorry, but i couldn't find what you are looking for. Try other keyword, title or author.");
-                        if (messageLog != null) {
-                            messageLog.setResultsCount(BigInteger.ZERO);
-                        }
                     }
                 } else {
                     response.setUrl(receivedItems.get(0).getMoreSearchResultsUrl());
                 }
+            } else {
+                logResultsCount(messageLog, BigInteger.ZERO);
             }
+        }
+    }
+
+    private static void logResultsCount(MessageLog messageLog, BigInteger value) {
+        if (messageLog != null) {
+            messageLog.setResultsCount(value);
         }
     }
 

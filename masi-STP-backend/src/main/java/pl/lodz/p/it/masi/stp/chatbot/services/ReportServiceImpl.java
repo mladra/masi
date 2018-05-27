@@ -4,8 +4,8 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.lodz.p.it.masi.stp.chatbot.collections.ConversationLog;
-import pl.lodz.p.it.masi.stp.chatbot.collections.MessageLog;
+import pl.lodz.p.it.masi.stp.chatbot.model.collections.logs.ConversationLog;
+import pl.lodz.p.it.masi.stp.chatbot.model.collections.logs.MessageLog;
 import pl.lodz.p.it.masi.stp.chatbot.repositories.ConversationLogsRepository;
 
 import java.io.ByteArrayOutputStream;
