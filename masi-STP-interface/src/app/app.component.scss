@@ -1,3 +1,5 @@
+@import "../../node_modules/font-awesome/css/font-awesome.css";
+
 $blue: #2196f3;
 $dingy: #495b6a;
 $white: #ffffff;
@@ -27,7 +29,7 @@ $trans: 0.3s ease;
   width: 100%;
   overflow: hidden;
   background-color: white;
-  position: fixed;
+  position: relative;
 
   .inner {
     overflow: scroll;
@@ -230,6 +232,7 @@ $trans: 0.3s ease;
     .text-wrapper {
       border-top-right-radius: 10px;
       background: $primary;
+      max-width: 75%;
 
       &:before {
         border-width: 0 10px 10px 0;
@@ -237,6 +240,52 @@ $trans: 0.3s ease;
         position: absolute;
         top: 0;
         left: -9px;
+      }
+
+      button.btn-conversation {
+
+        display: inline-block;
+
+        margin: 2px;
+        font-size: large;
+
+        border-width: 0;
+        outline: none;
+        border-radius: 2px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+
+        background-color: $white;
+        color: $primary;
+
+        transition: background-color 0.3s;
+      }
+
+      .btn-conversation:hover:enabled,
+      .btn-conversation:focus:enabled {
+        background-color: $accent;
+      }
+
+      button.btn-conversation {
+
+        display: inline-block;
+
+        margin: 2px;
+        font-size: large;
+
+        border-width: 0;
+        outline: none;
+        border-radius: 2px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+
+        background-color: $white;
+        color: $primary;
+
+        transition: background-color 0.3s;
+      }
+
+      .btn-conversation:hover:enabled,
+      .btn-conversation:focus:enabled {
+        background-color: $accent;
       }
     }
   }
@@ -365,67 +414,6 @@ $trans: 0.3s ease;
   transition: width 0.2s ease-out, padding-top 0.2s ease-out;
 }
 
-.btn-conversation {
-  position: relative;
-
-  display: inline;
-  margin: 2px;
-  font-size: large;
-
-  border-width: 0;
-  outline: none;
-  border-radius: 2px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
-
-  background-color: $white;
-  color: $primary;
-
-  transition: background-color 0.3s;
-}
-
-.btn-conversation:hover,
-.btn-conversation:focus {
-  background-color: $accent;
-}
-
-.btn-conversation > * {
-  position: relative;
-}
-
-.btn-conversation span {
-  display: inline;
-  padding: 12px 24px;
-}
-
-.btn-conversation:before {
-  content: "";
-
-  position: absolute;
-  top: 50%;
-  left: 50%;
-
-  display: block;
-  width: 0;
-  padding-top: 0;
-
-  border-radius: 100%;
-
-  background-color: rgba(236, 240, 241, 0.3);
-
-  -webkit-transform: translate(-50%, -50%);
-  -moz-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  -o-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-}
-
-.btn-conversation:active:before {
-  width: 120%;
-  padding-top: 120%;
-
-  transition: width 0.2s ease-out, padding-top 0.2s ease-out;
-}
-
 a:link {
   color: $white;
 }
@@ -440,6 +428,36 @@ a:hover {
 
 a:active {
   color: darker($accent, 50%);
+}
+
+.back {
+		position: absolute;
+}
+
+.front {
+		position: relative;
+}
+
+.slow-spin {
+  -webkit-animation: fa-spin 5s infinite linear;
+  animation: fa-spin 5s infinite linear;
+}
+
+.spin-reverse {
+  animation: spin-reverse 5s infinite linear;
+}
+
+.center {
+  text-align: center;
+}
+
+@keyframes spin-reverse {
+  0% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
 }
 
 @keyframes wave {

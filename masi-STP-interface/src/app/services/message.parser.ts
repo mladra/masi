@@ -15,7 +15,9 @@ export class MessageParser {
         if (part.startsWith('&')) {
           let cat = part.replace(/&/g, '');
           cat = cat.replace(/_/g, ' ');
-          categories.push(cat);
+          if (cat.length > 1) {
+            categories.push(cat);
+          }
         }
       }
       output.push(categories);
@@ -23,32 +25,23 @@ export class MessageParser {
     return output;
   }
 
-  getLinks(messages: string[]) {
-    const links: string[] = new Array();
-    for (const message of messages) {
-      const parts: string[] = message.split(' ');
-      for (const part of parts) {
-        if (part.startsWith('&link&')) {
-          const link = part.replace(/&link&/g, '');
-          links.push(link);
-        }
-      }
-    }
-    return links;
-  }
-
   getParsedResponse(messages: string[]) {
     const output: string[] = [];
     for (const message of messages) {
       let singleMessage = '';
-      const parts: string[] = message.split(' ');
-      for (const part of parts) {
-        if (!part.startsWith('&')) {
-          singleMessage += ' ' + part;
+      console.log(message);
+      if (message === '**') {
+        output.push('How useful was this conversation?');
+      } else {
+        const parts: string[] = message.split(' ');
+        for (const part of parts) {
+          if (!part.startsWith('&')) {
+            singleMessage += ' ' + part;
+          }
         }
-      }
-      if (singleMessage.length > 0) {
-        output.push(singleMessage);
+        if (singleMessage.length > 0) {
+          output.push(singleMessage);
+        }
       }
     }
     return output;

@@ -6,5 +6,4 @@ export class Message {
     response: string[];
     url: string;
     categories: string[][];
-    links: string[];
 }

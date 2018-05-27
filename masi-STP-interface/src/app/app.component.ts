@@ -16,8 +16,11 @@ export class AppComponent implements OnInit, AfterViewChecked {
   private messages: Message[];
   private userMessage: string;
   private botTyping: boolean;
+  private refreshing: boolean;
   private connectionError: boolean;
+  private conversationFinished: boolean;
   private windowRef: Window;
+  private scores: number[];
 
   constructor(
     private conversationService: ConversationService,
@@ -26,13 +29,16 @@ export class AppComponent implements OnInit, AfterViewChecked {
   ) {
     this.messages = [];
     this.botTyping = false;
+    this.refreshing = false;
     this.connectionError = true;
+    this.conversationFinished = false;
     this.userMessage = '';
+    this.scores = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   }
 
   ngOnInit() {
     this.refreshConnection();
-    this.windowRef = window.open('https://www.amazon.com');
+    this.windowRef = window.open('https://www.amazon.com/');
     this.windowRef.blur();
   }
 
@@ -56,9 +62,13 @@ export class AppComponent implements OnInit, AfterViewChecked {
       this.messageService.sendMessage(messageToSent).subscribe(
         response => {
           const responseMsg = response.body;
+
+          if (responseMsg.response.includes('**')) {
+            this.conversationFinished = true;
+          }
+
           responseMsg.author = 'bot';
           responseMsg.categories = this.messageParser.getCategories(responseMsg.response);
-          responseMsg.links = this.messageParser.getLinks(responseMsg.response);
           responseMsg.response = this.messageParser.getParsedResponse(responseMsg.response);
           this.botTyping = false;
           this.messages.push(responseMsg);
@@ -74,14 +84,14 @@ export class AppComponent implements OnInit, AfterViewChecked {
             response: null,
             url: null,
             context: null,
-            categories: [],
-            links: []});
+            categories: []});
         }
       );
     }
   }
 
   refreshConnection() {
+    this.refreshing = true;
     const msg = new Message();
     msg.message = '';
     this.messageService.sendMessage(msg).subscribe(
@@ -90,16 +100,24 @@ export class AppComponent implements OnInit, AfterViewChecked {
         responseMsg.author = 'bot';
         responseMsg.categories = new Array();
         this.conversationService.setConversationContext(responseMsg.context);
+
+        if (responseMsg.response.includes('**')) {
+          this.conversationFinished = true;
+        }
+
         this.messages.push(responseMsg);
         this.connectionError = false;
+        this.refreshing = false;
       },
       error => {
         this.connectionError = true;
+        this.refreshing = false;
       }
     );
   }
 
   chooseCategory(category) {
+    this.botTyping = true;
     const msg = new Message();
     msg.author = 'user';
     msg.context = this.conversationService.getConversationContext();
@@ -123,8 +141,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
             response: null,
             url: null,
             context: null,
-            categories: [],
-            links: []});
+            categories: []});
         }
       );
   }
@@ -144,5 +161,33 @@ export class AppComponent implements OnInit, AfterViewChecked {
         this.userMessage = '';
       }
     }
+  }
+
+  isMessageLast(message) {
+    const index = this.messages.indexOf(message);
+    return !(index && this.messages.length - 1 === index);
+  }
+
+  evaluateUsability(score) {
+    this.pushSingleScoreMessage(score);
+
+    const message2 = new Message();
+    message2.author = 'bot';
+    message2.context = this.conversationService.getConversationContext();
+    message2.response = ['How are you satisfied with chatbot help?'];
+    this.messages.push(message2);
+  }
+
+  evaluateSatisfaction(score) {
+    const msg = this.pushSingleScoreMessage(score);
+  }
+
+  pushSingleScoreMessage(score) {
+    const message = new Message();
+    message.author = 'user';
+    message.context = this.conversationService.getConversationContext();
+    message.message = score;
+    this.messages.push(message);
+    return message;
   }
 }
