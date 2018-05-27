@@ -1,19 +1,16 @@
 package pl.lodz.p.it.masi.stp.chatbot.masiSTPbackend;
 
 import com.ibm.watson.developer_cloud.conversation.v1.model.MessageResponse;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import pl.lodz.p.it.masi.stp.chatbot.entities.MessageDto;
+import pl.lodz.p.it.masi.stp.chatbot.dtos.MessageDto;
 import pl.lodz.p.it.masi.stp.chatbot.services.ConversationServiceImpl;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 
 import static org.junit.Assert.*;
 
@@ -30,7 +27,7 @@ public class AmazonTests {
 		testMessage.setMessage("I want history books.");
 		conversationService.initialize();
 		MessageResponse watsonResponse = conversationService.getWatsonResponse(testMessage, testMessage);
-		conversationService.getAmazonResponse(testMessage, testMessage, watsonResponse);
+		conversationService.getAmazonResponse(testMessage, watsonResponse);
 		assertNotNull(testMessage.getUrl());
 		assertNotEquals(testMessage.getUrl(),"");
 		assertTrue(testMessage.getUrl().contains("https://"));
@@ -58,10 +55,9 @@ public class AmazonTests {
 		MessageDto testMessage = new MessageDto();
 		testMessage.setMessage("I want biography books about holocaust.");
 		conversationService.initialize();
-		MessageResponse watsonResponse = conversationService.getWatsonResponse(testMessage, testMessage);
 		testMessage.setMessage("historical");
-		watsonResponse = conversationService.getWatsonResponse(testMessage, testMessage);
-		conversationService.getAmazonResponse(testMessage, testMessage, watsonResponse);
+		MessageResponse watsonResponse = conversationService.getWatsonResponse(testMessage, testMessage);
+		conversationService.getAmazonResponse(testMessage, watsonResponse);
 		assertNotNull(testMessage.getUrl());
 		assertNotEquals(testMessage.getUrl(),"");
 		assertTrue(testMessage.getUrl().contains("https://"));

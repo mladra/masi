@@ -696,7 +696,7 @@ public class ItemAttributes {
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getCategory().add(newItem);
+     *    getCategories().add(newItem);
      * </pre>
      * 
      * 

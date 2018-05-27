@@ -1,4 +1,4 @@
-package pl.lodz.p.it.masi.stp.chatbot.entities;
+package pl.lodz.p.it.masi.stp.chatbot.dtos;
 
 import com.ibm.watson.developer_cloud.conversation.v1.model.Context;
 

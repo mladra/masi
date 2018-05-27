@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import pl.lodz.p.it.masi.stp.chatbot.entities.MessageDto;
+import pl.lodz.p.it.masi.stp.chatbot.dtos.MessageDto;
 import pl.lodz.p.it.masi.stp.chatbot.services.ConversationServiceImpl;
 
 import java.util.stream.Collectors;

@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { ConversationService } from './services/conversation.service';
 import { MessageService } from './services/message.service';
 import { HttpClientModule } from '@angular/common/http';
+import { MessageParser } from './services/message.parser';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { HttpClientModule } from '@angular/common/http';
   ],
   providers: [
     ConversationService,
-    MessageService
+    MessageService,
+    MessageParser
   ],
   bootstrap: [AppComponent]
 })

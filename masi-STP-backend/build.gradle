@@ -1,13 +1,13 @@
 buildscript {
-	ext {
-		springBootVersion = '2.0.1.RELEASE'
-	}
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	}
+    ext {
+        springBootVersion = '2.0.1.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
 }
 
 apply plugin: 'java'
@@ -20,11 +20,11 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 configurations {
-	all*.exclude module : 'logback-classic'
+    all*.exclude module: 'logback-classic'
 }
 
 dependencies {
@@ -32,8 +32,10 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
     compile group: 'commons-codec', name: 'commons-codec', version: '1.11'
     compile 'com.ibm.watson.developer_cloud:java-sdk:5.2.0'
-    testCompile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
-    runtime('org.springframework.boot:spring-boot-devtools')
     compile 'com.itextpdf:itextpdf:5.5.13'
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
+    compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.1'
+    testCompile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    runtime('org.springframework.boot:spring-boot-devtools')
 }
