@@ -94,7 +94,7 @@ public class ReportServiceImpl implements ReportService {
             for (int i = 0; i < conversationLog.getMessagesLogs().size(); i++) {
                 Paragraph messageQei = new Paragraph();
                 BigInteger resultCount = conversationLog.getMessagesLogs().get(i).getResultsCount();
-                if (!Objects.equals(resultCount, BigInteger.ZERO)) {
+                if (!Objects.equals(resultCount, BigInteger.ZERO) && resultCount != null) {
                     if (i != 0) {
                         MessageLog messageLog = conversationLog.getMessagesLogs().get(i - 1);
                         if (messageLog.getWatsonOutput().contains("I'm sorry but I didn't get that. Could you be more specific?")) {
