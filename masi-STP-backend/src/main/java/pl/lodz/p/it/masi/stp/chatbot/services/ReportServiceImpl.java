@@ -116,8 +116,10 @@ public class ReportServiceImpl implements ReportService {
                             continue;
                         } else {
                             BigInteger previousResultCount = messageLog.getResultsCount();
-                            messageQei.add(new Paragraph("Question: " + messageLog.getWatsonOutput().toString(), subFont));
-                            messageQei.add(new Paragraph("QEI: " + countQEI(previousResultCount.doubleValue(), resultCount.doubleValue())));
+                            if (previousResultCount != null) {
+                                messageQei.add(new Paragraph("Question: " + messageLog.getWatsonOutput().toString(), subFont));
+                                messageQei.add(new Paragraph("QEI: " + countQEI(previousResultCount.doubleValue(), resultCount.doubleValue())));
+                            }
                         }
                     } else {
                         messageQei.add(new Paragraph("Question: init question", subFont));
