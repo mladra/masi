@@ -207,7 +207,7 @@ public class ReportServiceImpl implements ReportService {
                 if (isNumeric(conversationLog.getChatbotUsabilityScore())) {
                     sum += Double.parseDouble(conversationLog.getChatbotUsabilityScore());
                 } else {
-                    sum += 10;
+                    sum += 5;
                 }
             } else {
                 sum += 5;
