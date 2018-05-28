@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Message} from './models/message';
 import {ConversationService} from './services/conversation.service';
 import {MessageService} from './services/message.service';
@@ -9,9 +9,7 @@ import {MessageParser} from './services/message.parser';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit, AfterViewChecked {
-
-  @ViewChild('scrollable') private scrollable: ElementRef;
+export class AppComponent implements OnInit {
 
   private messages: Message[];
   private userMessage: string;
@@ -41,10 +39,6 @@ export class AppComponent implements OnInit, AfterViewChecked {
     this.windowRef = window.open('https://www.amazon.com/');
     this.windowRef.blur();
     this.conversationService.setClientIp();
-  }
-
-  ngAfterViewChecked() {
-    this.scrollToBottom();
   }
 
   sendMessage(msg) {
@@ -147,14 +141,6 @@ export class AppComponent implements OnInit, AfterViewChecked {
             ip: ''});
         }
       );
-  }
-
-  scrollToBottom() {
-    try {
-      this.scrollable.nativeElement.scrollTop = this.scrollable.nativeElement.scrollHeight;
-    } catch (err) {
-      console.log(err);
-    }
   }
 
   handleKeyUp(event) {
