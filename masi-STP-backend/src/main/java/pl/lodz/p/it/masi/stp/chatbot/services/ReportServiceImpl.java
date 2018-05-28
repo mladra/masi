@@ -209,6 +209,8 @@ public class ReportServiceImpl implements ReportService {
                 } else {
                     sum += 10;
                 }
+            } else {
+                sum += 5;
             }
         }
         return sum / conversationLogs.size();
@@ -222,8 +224,10 @@ public class ReportServiceImpl implements ReportService {
                 if (isNumeric(conversationLog.getChatbotEffectivenessScore())) {
                     sum += Double.parseDouble(conversationLog.getChatbotEffectivenessScore());
                 } else {
-                    sum += 10;
+                    sum += 5;
                 }
+            } else {
+                sum += 5;
             }
         }
         return sum / conversationLogs.size();
