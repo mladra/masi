@@ -9,7 +9,7 @@
       </div>
     </div>
   </nav>
-  <div class="inner" id="inner" #scrollable>
+  <div class="inner" id="inner" #scrollable [scrollTop]="scrollable.scrollHeight">
     <div class="content" id="content">
       <div *ngIf="!connectionError">
         <div *ngFor="let msg of messages">
