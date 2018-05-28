@@ -9,6 +9,7 @@ public class MessageDto {
     private List<String> response;
     private Context context;
     private String url;
+    private String ip;
 
     public MessageDto() {
     }
@@ -51,6 +52,14 @@ public class MessageDto {
         this.response = response;
     }
 
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
     @Override
     public String toString() {
         return "MessageDto{" +
@@ -58,6 +67,7 @@ public class MessageDto {
                 ", response=" + response +
                 ", context=" + context +
                 ", url='" + url + '\'' +
+                ", ip='" + ip + '\'' +
                 '}';
     }
 }

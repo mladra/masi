@@ -40,6 +40,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
     this.refreshConnection();
     this.windowRef = window.open('https://www.amazon.com/');
     this.windowRef.blur();
+    this.conversationService.setClientIp();
   }
 
   ngAfterViewChecked() {
@@ -84,7 +85,8 @@ export class AppComponent implements OnInit, AfterViewChecked {
             response: null,
             url: null,
             context: null,
-            categories: []});
+            categories: [],
+            ip: ''});
         }
       );
     }
@@ -141,7 +143,8 @@ export class AppComponent implements OnInit, AfterViewChecked {
             response: null,
             url: null,
             context: null,
-            categories: []});
+            categories: [],
+            ip: ''});
         }
       );
   }

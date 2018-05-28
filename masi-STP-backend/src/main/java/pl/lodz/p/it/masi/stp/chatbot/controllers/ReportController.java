@@ -35,4 +35,18 @@ public class ReportController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.toString());
         }
     }
+
+    @RequestMapping(value = "/pdf", method = RequestMethod.GET)
+    public @ResponseBody
+    ResponseEntity generateFullReport() {
+        try {
+            byte[] out = reportService.generateReport(null);
+            HttpHeaders hHeaders = new HttpHeaders();
+            hHeaders.add("content-disposition", "attachment; filename=" + LocalDateTime.now() + ".pdf");
+            hHeaders.add("Content-Type", "application/pdf");
+            return new ResponseEntity(out, hHeaders, HttpStatus.OK);
+        } catch (DocumentException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.toString());
+        }
+    }
 }

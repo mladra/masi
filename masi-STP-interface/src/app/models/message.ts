@@ -6,4 +6,9 @@ export class Message {
     response: string[];
     url: string;
     categories: string[][];
+    ip: string;
+
+    constructor() {
+        this.ip = localStorage.getItem('CLIENT_IP');
+    }
 }
