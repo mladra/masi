@@ -67,9 +67,7 @@ export class AppComponent implements OnInit {
           responseMsg.response = this.messageParser.getParsedResponse(responseMsg.response);
           this.botTyping = false;
           this.messages.push(responseMsg);
-          if (responseMsg.url) {
-            this.windowRef.location.href = responseMsg.url;
-          }
+          this.changeUrl(responseMsg);
         },
         error => {
           this.botTyping = false;
@@ -96,11 +94,7 @@ export class AppComponent implements OnInit {
         responseMsg.author = 'bot';
         responseMsg.categories = new Array();
         this.conversationService.setConversationContext(responseMsg.context);
-
-        if (responseMsg.response.includes('**')) {
-          this.conversationFinished = true;
-        }
-
+        this.changeUrl(responseMsg);
         this.messages.push(responseMsg);
         this.connectionError = false;
         this.refreshing = false;
@@ -110,6 +104,16 @@ export class AppComponent implements OnInit {
         this.refreshing = false;
       }
     );
+  }
+
+  changeUrl(responseMsg) {
+    if (responseMsg.url) {
+      if (this.windowRef === undefined || this.windowRef === null || this.windowRef.closed) {
+        this.windowRef = window.open(responseMsg.url);
+      } else {
+        this.windowRef.location.href = responseMsg.url;
+      }
+    }
   }
 
   chooseCategory(category) {

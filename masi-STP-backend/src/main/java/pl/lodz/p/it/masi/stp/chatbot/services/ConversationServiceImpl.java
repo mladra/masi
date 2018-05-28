@@ -264,16 +264,6 @@ public class ConversationServiceImpl implements ConversationService {
         }
     }
 
-    private static String getClientIpAddress(HttpServletRequest request) {
-        for (String header : IP_HEADER_CANDIDATES) {
-            String ip = request.getHeader(header);
-            if (ip != null && ip.length() != 0 && !"unknown".equalsIgnoreCase(ip)) {
-                return ip;
-            }
-        }
-        return request.getRemoteAddr();
-    }
-
     @Override
     public void evaluateUsability(MessageDto messageDto) {
         String conversationId = messageDto.getContext().getConversationId();
