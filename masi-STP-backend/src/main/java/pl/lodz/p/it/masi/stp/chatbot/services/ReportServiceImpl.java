@@ -40,15 +40,30 @@ public class ReportServiceImpl implements ReportService {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         PdfWriter.getInstance(document, os);
 
-        List<ConversationLog> conversationLogs = logsRepository.findAllByUserIp(ipAddress);
+        List<ConversationLog> conversationLogs;
+
+        if (ipAddress != null) {
+            conversationLogs = logsRepository.findAllByUserIp(ipAddress);
+        } else {
+            conversationLogs = logsRepository.findAll();
+        }
 
         document.open();
 
-        document.addTitle(ipAddress + LocalDateTime.now());
+        if (ipAddress != null) {
+            document.addTitle(ipAddress + LocalDateTime.now());
+        } else {
+            document.addTitle(LocalDateTime.now().toString());
+        }
 
         Paragraph preface = new Paragraph();
         addEmptyLine(preface, 1);
-        preface.add(new Paragraph("Report for " + ipAddress + " at: " + LocalDateTime.now().toString(), catFont));
+        if (ipAddress != null) {
+            preface.add(new Paragraph("Report for " + ipAddress + " at: " + LocalDateTime.now().toString(), catFont));
+        } else {
+            preface.add(new Paragraph("Report for all conversations at: " + LocalDateTime.now().toString(), catFont));
+        }
+
         addEmptyLine(preface, 5);
 
         addAclContent(document, conversationLogs);

@@ -1,8 +1,8 @@
-import {AfterViewChecked, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {Message} from './models/message';
-import {ConversationService} from './services/conversation.service';
-import {MessageService} from './services/message.service';
-import {MessageParser} from './services/message.parser';
+import { Component, OnInit, AfterViewChecked, ViewChild, ElementRef } from '@angular/core';
+import { Message } from './models/message';
+import { ConversationService } from './services/conversation.service';
+import { MessageService } from './services/message.service';
+import { MessageParser } from './services/message.parser';
 
 @Component({
   selector: 'app-root',
@@ -18,9 +18,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
   private botTyping: boolean;
   private refreshing: boolean;
   private connectionError: boolean;
-  private conversationFinished: boolean;
   private windowRef: Window;
-  private scores: number[];
 
   constructor(
     private conversationService: ConversationService,
@@ -31,15 +29,14 @@ export class AppComponent implements OnInit, AfterViewChecked {
     this.botTyping = false;
     this.refreshing = false;
     this.connectionError = true;
-    this.conversationFinished = false;
     this.userMessage = '';
-    this.scores = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   }
 
   ngOnInit() {
     this.refreshConnection();
-    this.windowRef = window.open('https://www.amazon.com/');
+    this.windowRef = window.open('https://www.amazon.com');
     this.windowRef.blur();
+    this.conversationService.setClientIp();
   }
 
   ngAfterViewChecked() {
@@ -62,11 +59,6 @@ export class AppComponent implements OnInit, AfterViewChecked {
       this.messageService.sendMessage(messageToSent).subscribe(
         response => {
           const responseMsg = response.body;
-
-          if (responseMsg.response.includes('**')) {
-            this.conversationFinished = true;
-          }
-
           responseMsg.author = 'bot';
           responseMsg.categories = this.messageParser.getCategories(responseMsg.response);
           responseMsg.response = this.messageParser.getParsedResponse(responseMsg.response);
@@ -84,7 +76,8 @@ export class AppComponent implements OnInit, AfterViewChecked {
             response: null,
             url: null,
             context: null,
-            categories: []});
+            categories: [],
+            ip: ''});
         }
       );
     }
@@ -100,11 +93,6 @@ export class AppComponent implements OnInit, AfterViewChecked {
         responseMsg.author = 'bot';
         responseMsg.categories = new Array();
         this.conversationService.setConversationContext(responseMsg.context);
-
-        if (responseMsg.response.includes('**')) {
-          this.conversationFinished = true;
-        }
-
         this.messages.push(responseMsg);
         this.connectionError = false;
         this.refreshing = false;
@@ -117,7 +105,6 @@ export class AppComponent implements OnInit, AfterViewChecked {
   }
 
   chooseCategory(category) {
-    this.botTyping = true;
     const msg = new Message();
     msg.author = 'user';
     msg.context = this.conversationService.getConversationContext();
@@ -141,7 +128,8 @@ export class AppComponent implements OnInit, AfterViewChecked {
             response: null,
             url: null,
             context: null,
-            categories: []});
+            categories: [],
+            ip: ''});
         }
       );
   }
@@ -164,54 +152,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
   }
 
   isMessageLast(message) {
-    const index = this.messages.indexOf(message);
+    let index = this.messages.indexOf(message);
     return !(index && this.messages.length - 1 === index);
-  }
-
-  evaluateUsability(score) {
-    const message = this.pushSingleScoreMessage(score);
-    this.botTyping = true;
-    this.messageService.evaluateUsability(message).subscribe(
-      response => {
-        const message2 = new Message();
-        message2.author = 'bot';
-        message2.context = this.conversationService.getConversationContext();
-        message2.response = ['How are you satisfied with chatbot help?'];
-        this.botTyping = false;
-        this.messages.push(message2);
-      },
-      error => {
-        this.botTyping = false;
-        console.log(error);
-      }
-    );
-  }
-
-  evaluateSatisfaction(score) {
-    const message = this.pushSingleScoreMessage(score);
-    this.botTyping = true;
-    this.messageService.evaluateSatisfaction(message).subscribe(
-      response => {
-        const message2 = new Message();
-        message2.author = 'bot';
-        message2.context = this.conversationService.getConversationContext();
-        message2.response = ['Thank you for your ratings. We really appreciate your help.'];
-        this.botTyping = false;
-        this.messages.push(message2);
-      },
-      error => {
-        this.botTyping = false;
-        console.log(error);
-      }
-    );
-  }
-
-  pushSingleScoreMessage(score) {
-    const message = new Message();
-    message.author = 'user';
-    message.context = this.conversationService.getConversationContext();
-    message.message = score;
-    this.messages.push(message);
-    return message;
   }
 }

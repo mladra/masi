@@ -104,8 +104,7 @@ public class ConversationServiceImpl implements ConversationService {
                 conversationLog.setConversationId(requestMsg.getContext().getConversationId());
                 conversationLog.setQuestionsCounter(1L);
                 conversationLog.setMisunderstoodQuestionsCounter(0L);
-                HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-                conversationLog.setUserIp(getClientIpAddress(request));
+                conversationLog.setUserIp(requestMsg.getIp());
                 conversationLog.setMessagesLogs(new ArrayList<>());
             }
             MessageResponse watsonResponse = getWatsonResponse(requestMsg, responseMsg, conversationLog, messageLog);
