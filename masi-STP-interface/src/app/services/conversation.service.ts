@@ -7,7 +7,7 @@ export class ConversationService {
   constructor(private http: HttpClient) { }
 
   setConversationContext(context) {
-    localStorage.setItem("ConversationID", JSON.stringify(context));
+    localStorage.setItem('ConversationID', JSON.stringify(context));
   }
 
   getConversationContext() {

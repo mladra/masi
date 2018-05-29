@@ -91,6 +91,9 @@ public class ReportServiceImpl implements ReportService {
         for (ConversationLog conversationLog : conversationLogs) {
             Paragraph acl = new Paragraph();
             acl.add(new Paragraph("ACL for " + conversationLog.getConversationId(), subCatFont));
+            if (conversationLog.getUserIp() != null) {
+                acl.add(new Paragraph("User ip: " + conversationLog.getUserIp(), subCatFont));
+            }
             acl.add(new Paragraph("Total number of questions: " + conversationLog.getQuestionsCounter(), subFont));
             document.add(acl);
         }
@@ -105,6 +108,9 @@ public class ReportServiceImpl implements ReportService {
         for (ConversationLog conversationLog : conversationLogs) {
             Paragraph qei = new Paragraph();
             qei.add(new Paragraph("QEI for " + conversationLog.getConversationId(), subCatFont));
+            if (conversationLog.getUserIp() != null) {
+                qei.add(new Paragraph("User ip: " + conversationLog.getUserIp(), subCatFont));
+            }
             document.add(qei);
             for (int i = 0; i < conversationLog.getMessagesLogs().size(); i++) {
                 Paragraph messageQei = new Paragraph();
@@ -141,6 +147,9 @@ public class ReportServiceImpl implements ReportService {
         for (ConversationLog conversationLog : conversationLogs) {
             Paragraph cfi = new Paragraph();
             cfi.add(new Paragraph("CFI for " + conversationLog.getConversationId(), subCatFont));
+            if (conversationLog.getUserIp() != null) {
+                cfi.add(new Paragraph("User ip: " + conversationLog.getUserIp(), subCatFont));
+            }
             cfi.add(new Paragraph("Total number of misunderstood questions: " + conversationLog.getMisunderstoodQuestionsCounter(), subFont));
             document.add(cfi);
         }
@@ -156,6 +165,9 @@ public class ReportServiceImpl implements ReportService {
         for (ConversationLog conversationLog : conversationLogs) {
             Paragraph cus = new Paragraph();
             cus.add(new Paragraph("CUS for " + conversationLog.getConversationId(), subCatFont));
+            if (conversationLog.getUserIp() != null) {
+                cus.add(new Paragraph("User ip: " + conversationLog.getUserIp(), subCatFont));
+            }
             cus.add(new Paragraph("Chatbot usability score: " + conversationLog.getChatbotUsabilityScore(), subFont));
             document.add(cus);
         }
@@ -171,6 +183,9 @@ public class ReportServiceImpl implements ReportService {
         for (ConversationLog conversationLog : conversationLogs) {
             Paragraph ces = new Paragraph();
             ces.add(new Paragraph("CES for " + conversationLog.getConversationId(), subCatFont));
+            if (conversationLog.getUserIp() != null) {
+                ces.add(new Paragraph("User ip: " + conversationLog.getUserIp(), subCatFont));
+            }
             ces.add(new Paragraph("Chatbot effectiveness score: " + conversationLog.getChatbotEffectivenessScore(), subFont));
             document.add(ces);
         }

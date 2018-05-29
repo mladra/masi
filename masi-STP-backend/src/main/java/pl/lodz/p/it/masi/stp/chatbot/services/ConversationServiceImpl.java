@@ -12,8 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import pl.lodz.p.it.masi.stp.chatbot.amazon.*;
 import pl.lodz.p.it.masi.stp.chatbot.dtos.MessageDto;
 import pl.lodz.p.it.masi.stp.chatbot.model.collections.conversation.ConversationHelper;
@@ -26,7 +24,6 @@ import pl.lodz.p.it.masi.stp.chatbot.utils.CategoryUtils;
 import pl.lodz.p.it.masi.stp.chatbot.utils.EnumUtils;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.ws.WebServiceException;
 import java.math.BigInteger;
 import java.util.ArrayList;
