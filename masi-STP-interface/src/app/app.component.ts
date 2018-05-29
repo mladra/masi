@@ -66,6 +66,7 @@ export class AppComponent implements OnInit {
           responseMsg.categories = this.messageParser.getCategories(responseMsg.response);
           responseMsg.response = this.messageParser.getParsedResponse(responseMsg.response);
           this.botTyping = false;
+          this.conversationService.setConversationContext(responseMsg.context);
           this.messages.push(responseMsg);
           this.changeUrl(responseMsg);
         },
@@ -132,6 +133,7 @@ export class AppComponent implements OnInit {
           if (responseMsg.url) {
             this.windowRef.location.href = responseMsg.url;
           }
+          this.conversationService.setConversationContext(responseMsg.context);
         },
         error => {
           this.botTyping = false;
