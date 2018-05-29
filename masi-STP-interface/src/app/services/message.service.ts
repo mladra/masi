@@ -5,7 +5,7 @@ import {Message} from '../models/message';
 @Injectable()
 export class MessageService {
 
-  private rootUrl = 'http://localhost:8080/chat';
+  private rootUrl = 'http://masi.ics.p.lodz.pl:4203/chat';
 
   constructor(
     private http: HttpClient

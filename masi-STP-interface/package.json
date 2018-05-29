@@ -4,11 +4,12 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --open --ec true",
+    "start": "ng serve --open --ec true --port 4204",
     "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "production": "ng serve --ec true --port 4204"
   },
   "private": true,
   "dependencies": {
@@ -21,6 +22,7 @@
     "@angular/platform-browser": "^5.2.0",
     "@angular/platform-browser-dynamic": "^5.2.0",
     "@angular/router": "^5.2.0",
+    "@angular/cli": "~1.7.4",
     "core-js": "^2.4.1",
     "font-awesome": "^4.7.0",
     "rxjs": "^5.5.6",
