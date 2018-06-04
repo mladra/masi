@@ -25,7 +25,7 @@ public class WatsonTests {
 		MessageDto testMessage = new MessageDto();
 		testMessage.setMessage("");
 		conversationService.initialize();
-		MessageResponse response = conversationService.getWatsonResponse(testMessage, testMessage);
+		MessageResponse response = conversationService.getWatsonResponse(testMessage, testMessage, null, null);
 		assertNotNull(response);
 		assertNotNull(testMessage.getContext());
 		assertNotNull(testMessage.getResponse());
@@ -42,7 +42,7 @@ public class WatsonTests {
 		MessageDto testMessage = new MessageDto();
 		testMessage.setMessage("I want something about Africa");
 		conversationService.initialize();
-		MessageResponse response = conversationService.getWatsonResponse(testMessage, testMessage);
+		MessageResponse response = conversationService.getWatsonResponse(testMessage, testMessage, null, null);
 		assertNotNull(response);
 		assertNotNull(testMessage.getContext());
 		assertNotNull(testMessage.getResponse());
@@ -56,13 +56,13 @@ public class WatsonTests {
 		MessageDto testMessage = new MessageDto();
 		testMessage.setMessage("What kind of books do you have?");
 		conversationService.initialize();
-		MessageResponse response = conversationService.getWatsonResponse(testMessage, testMessage);
+		MessageResponse response = conversationService.getWatsonResponse(testMessage, testMessage, null, null);
 		assertNotNull(response);
 		assertNotNull(testMessage.getContext());
 		assertNotNull(testMessage.getResponse());
 		assertTrue(testMessage.getResponse().size() > 0);
 		assertTrue(testMessage.getResponse().get(0).contains("biography"));
-		assertTrue(testMessage.getResponse().get(0).contains("memories"));
+		assertTrue(testMessage.getResponse().get(0).contains("memoires"));
 		assertTrue(testMessage.getResponse().get(0).contains("history"));
 	}
 	
@@ -71,12 +71,11 @@ public class WatsonTests {
 		MessageDto testMessage = new MessageDto();
 		testMessage.setMessage("I want historical book");
 		conversationService.initialize();
-		MessageResponse response = conversationService.getWatsonResponse(testMessage, testMessage);
+		MessageResponse response = conversationService.getWatsonResponse(testMessage, testMessage, null, null);
 		assertNotNull(response);
 		assertNotNull(testMessage.getContext());
 		assertNotNull(testMessage.getResponse());
 		assertTrue(testMessage.getResponse().size() > 0);
-		assertTrue(testMessage.getResponse().get(0).contains("HISTORY genre"));
 		assertEquals(testMessage.getContext().get("is_historical"), true);
 		assertEquals(testMessage.getContext().get("is_biography"), false);
 		assertEquals(testMessage.getContext().get("genre_selected"), true);
@@ -87,14 +86,14 @@ public class WatsonTests {
 		MessageDto testMessage = new MessageDto();
 		testMessage.setMessage("biography book");
 		conversationService.initialize();
-		MessageResponse response = conversationService.getWatsonResponse(testMessage, testMessage);
+		MessageResponse response = conversationService.getWatsonResponse(testMessage, testMessage, null, null);
 		assertNotNull(response);
 		assertNotNull(testMessage.getContext());
 		assertNotNull(testMessage.getResponse());
 		assertTrue(testMessage.getResponse().size() > 0);
-		String[] subs = new String[]{"arts and literature", "ethnic national", "historical", "leaders and notable people", "memoirs", "professionals academics", "reference collections", "regional Canada", "regional USA", "specific groups"};
+		String[] subs = new String[]{"&arts_and_literature", "&ethnic_national", "&historical", "&leaders_and_notable_people", "&memoirs", "&professionals_academics", "&reference_collections", "&regional_Canada", "&regional_USA", "&specific_groups"};
 		for (String sub : subs) {
-			assertTrue(testMessage.getResponse().stream().filter(l -> l.contains(sub)).findAny().get().contains(sub));
+			assertTrue(testMessage.getResponse().get(1).contains(sub));
 		}
 		assertEquals(testMessage.getContext().get("is_historical"), false);
 		assertEquals(testMessage.getContext().get("is_biography"), true);
