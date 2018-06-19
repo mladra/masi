@@ -26,8 +26,8 @@ public class AmazonTests {
 		MessageDto testMessage = new MessageDto();
 		testMessage.setMessage("I want history books.");
 		conversationService.initialize();
-		MessageResponse watsonResponse = conversationService.getWatsonResponse(testMessage, testMessage);
-		conversationService.getAmazonResponse(testMessage, watsonResponse);
+		MessageResponse watsonResponse = conversationService.getWatsonResponse(testMessage, testMessage, null, null);
+		conversationService.getAmazonResponse(testMessage, watsonResponse, null);
 		assertNotNull(testMessage.getUrl());
 		assertNotEquals(testMessage.getUrl(),"");
 		assertTrue(testMessage.getUrl().contains("https://"));
@@ -56,8 +56,8 @@ public class AmazonTests {
 		testMessage.setMessage("I want biography books about holocaust.");
 		conversationService.initialize();
 		testMessage.setMessage("historical");
-		MessageResponse watsonResponse = conversationService.getWatsonResponse(testMessage, testMessage);
-		conversationService.getAmazonResponse(testMessage, watsonResponse);
+		MessageResponse watsonResponse = conversationService.getWatsonResponse(testMessage, testMessage, null, null);
+		conversationService.getAmazonResponse(testMessage, watsonResponse, null);
 		assertNotNull(testMessage.getUrl());
 		assertNotEquals(testMessage.getUrl(),"");
 		assertTrue(testMessage.getUrl().contains("https://"));
