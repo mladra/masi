@@ -1,6 +1,25 @@
 # Masi STP
 Projekt tworzony na potrzeby przedmiotu Modelowanie i analiza systemów informatycznych
 
+# Opis projektu
+Projekt miał na celu wspomóc wybór produktu w sklepie Amazon przy wykorzystaniu chatbota. Po uruchomieniu aplikacji użytkownikowi otwierały się dwa okna - pierwsze ze stroną sklepu oraz drugie z oknem rozmowy z botem. Użytkownik mógł przekazać botowi co konkretnie go interesuje, a ten, gdy rozpoznał dany produkt / kategorię zmieniał poprzednio otwartą stronę sklepu. Następnie bot mógł doprecyzować rodzaj produktu, który użytkownik chce otrzymać w przypadku, gdy podany opis użytkownika był zbyt ogólny.
+
+# Technologie, frameworki i narzędzia
+Projekt utworzono z wykorzystaniem:
+ - Angular,
+ - Spring Boot,
+ - MongoDB,
+ - Amazon API,
+ - Watson IBM (natural language processor).
+
+# Umiejętności
+Podczas realizowania projektu udało mi się pozyskać następujące umiejętności:
+ - tworzenie przyjaznego UI z wykorzystaniem frameworka Angular,
+ - komunikacji przy wykorzystaniu REST API,
+ - parsowania otrzymanych wiadomości z serwera (treść wiadomości z serwera była w odpowiedniej formie, co potem pozwalało umieszczać na widoku odpowiednie przyciski dotyczące kategorii),
+ - integracji projektu z Amazon API,
+ - integracja bazy MongoDB z projektem Springowym.
+
 ## Uruchomienie projektu springowego
 ### JAVA SDK
 Na początku należy upewnić się, że kompilator javy jest zainstalowany i ustawiona jest ścieżka do java home. Patrz
@@ -75,7 +94,7 @@ C:\>mongorestore masi-STP-database
 
 ##### Sposób 2
  1. Uruchamiamy zainstalowane narzędzie MongoDB Compass Community.
- 2. Wciskamy klawisz Connect. Na panelu z lewej strony mamy do wyboru dostępne bazy danych.
+ 2. Wciskamy przycisk Connect. Na panelu z lewej strony mamy do wyboru dostępne bazy danych.
  3. Sprawdzamy czy na liście znajduje się baza danych o nazwie `stp`.
  4. Rozwijamy listę `stp`. Powinna tam znajdować się jedna kolekcja `logs`. Klikamy w nią.
  5. Sprawdzamy czy na liście znajdują się odpowiednie obiekty.
