@@ -1,10 +1,12 @@
 # Masi STP
 Projekt tworzony na potrzeby przedmiotu Modelowanie i analiza systemów informatycznych
 
-# Opis projektu
+## Ogólne informacje
+
+### Opis projektu
 Projekt miał na celu wspomóc wybór produktu w sklepie Amazon przy wykorzystaniu chatbota. Po uruchomieniu aplikacji użytkownikowi otwierały się dwa okna - pierwsze ze stroną sklepu oraz drugie z oknem rozmowy z botem. Użytkownik mógł przekazać botowi co konkretnie go interesuje, a ten, gdy rozpoznał dany produkt / kategorię zmieniał poprzednio otwartą stronę sklepu. Następnie bot mógł doprecyzować rodzaj produktu, który użytkownik chce otrzymać w przypadku, gdy podany opis użytkownika był zbyt ogólny.
 
-# Technologie, frameworki i narzędzia
+### Technologie, frameworki i narzędzia
 Projekt utworzono z wykorzystaniem:
  - Angular,
  - Spring Boot,
@@ -12,7 +14,7 @@ Projekt utworzono z wykorzystaniem:
  - Amazon API,
  - Watson IBM (natural language processor).
 
-# Umiejętności
+### Umiejętności
 Podczas realizowania projektu udało mi się pozyskać następujące umiejętności:
  - tworzenie przyjaznego UI z wykorzystaniem frameworka Angular,
  - komunikacji przy wykorzystaniu REST API,
