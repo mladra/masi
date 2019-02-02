@@ -1,12 +1,12 @@
-# masi-STP
-MASI - Short-Term Pelicans
+# Masi STP
+Projekt tworzony na potrzeby przedmiotu Modelowanie i analiza systemów informatycznych
 
 ## Uruchomienie projektu springowego
-### java sdk
+### JAVA SDK
 Na początku należy upewnić się, że kompilator javy jest zainstalowany i ustawiona jest ścieżka do java home. Patrz
 https://confluence.atlassian.com/doc/setting-the-java_home-variable-in-windows-8895.html
 
-### przed zbudowaniem
+### Przed zbudowaniem
 Należy w konstruktorze klasy ConversationServiceImpl dodać w miejscu komentarza następujący fragment kodu:
 ```bash
 conversation = new Conversation(
@@ -16,13 +16,13 @@ conversation = new Conversation(
 ```
 Login i Password należy zastąpić odpowiednimi danymi dostępowymi z aplikacji Conversation dostarczanej przez Watson IBM.
 
-### zbudowanie projektu
+### Zbudowanie projektu
 Po pobraniu projektu z repozytorium należy w konsoli wejść do katalogu `masi-STP-backend` i wywołać komendę
 ```bash
 ./gradlew build (linux/osx)
 ```
 na windowsie należy wywołać plik `gradlew.bat` z parametrem `build`
-### uruchomienie projektu
+### Uruchomienie projektu
 Po wywołaniu powyższej komendy projekt uruchomić można komendą
 ```bash
 ./gradlew bootRun (linux/osx)
