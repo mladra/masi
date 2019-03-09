@@ -1,48 +1,53 @@
 # Masi STP
-Projekt tworzony na potrzeby przedmiotu Modelowanie i analiza systemów informatycznych
+The project was implemented during the classes of Modelowanie i analiza systemów informatycznych.  
 
-## Ogólne informacje
+## Basic information
 
-### Opis projektu
-Projekt miał na celu wspomóc wybór produktu w sklepie Amazon przy wykorzystaniu chatbota. Po uruchomieniu aplikacji użytkownikowi otwierały się dwa okna - pierwsze ze stroną sklepu oraz drugie z oknem rozmowy z botem. Użytkownik mógł przekazać botowi co konkretnie go interesuje, a ten, gdy rozpoznał dany produkt / kategorię zmieniał poprzednio otwartą stronę sklepu. Następnie bot mógł doprecyzować rodzaj produktu, który użytkownik chce otrzymać w przypadku, gdy podany opis użytkownika był zbyt ogólny.
+### Project description
+The goal of the project was to support the users' selection process in the Amazon store with use of the chatbot. After lunch of the application two windows pops up - Amazon store page and conversion window. The user could pass his requirements for the item which he was interested in, then the chatbot redirected the user to a page where was the list of items which met the requirements.
 
-### Technologie, frameworki i narzędzia
-Projekt utworzono z wykorzystaniem:
- - Angular,
- - Spring Boot,
+### Technologies, frameworks and tools
+Project was created with use of:
+ - Angular framework,
+ - Spring Boot framework,
  - MongoDB,
  - Amazon API,
  - Watson IBM (natural language processor).
+ 
+### Gained skills and knowledge
+During the implementation of the project I learned:
+ - to create friendly UI with use of the Angular framework,
+ - to communicate with use of the REST API,
+ - to parse retrieved data from the server (the content of the message was in proper format, which allowed to place buttons in the view),
+ - to integrate with Amazon API,
+ - to integrate MongoDB database with the Spring Boot project.
 
-### Umiejętności
-Podczas realizowania projektu udało mi się pozyskać następujące umiejętności:
- - tworzenie przyjaznego UI z wykorzystaniem frameworka Angular,
- - komunikacji przy wykorzystaniu REST API,
- - parsowania otrzymanych wiadomości z serwera (treść wiadomości z serwera była w odpowiedniej formie, co potem pozwalało umieszczać na widoku odpowiednie przyciski dotyczące kategorii),
- - integracji projektu z Amazon API,
- - integracja bazy MongoDB z projektem Springowym.
-
-## Uruchomienie projektu springowego
+## Lunching SpringBoot project
 ### JAVA SDK
-Na początku należy upewnić się, że kompilator javy jest zainstalowany i ustawiona jest ścieżka do java home. Patrz
-https://confluence.atlassian.com/doc/setting-the-java_home-variable-in-windows-8895.html
+Firstly, install and add to PATH JAVA SDK.
+Look: https://confluence.atlassian.com/doc/setting-the-java_home-variable-in-windows-8895.html
 
-### Przed zbudowaniem
-Należy w konstruktorze klasy ConversationServiceImpl dodać w miejscu komentarza następujący fragment kodu:
-```bash
+### Before building
+In the constructor of the `ConversationServiceImpl` class replace the following fragment:
+```JAVA
 conversation = new Conversation(
         "2018-02-16",
         "login",
         "password");
 ```
-Login i Password należy zastąpić odpowiednimi danymi dostępowymi z aplikacji Conversation dostarczanej przez Watson IBM.
+Login and password should be replaced with access data provided by the Conversation application from Watson IBM.
 
-### Zbudowanie projektu
-Po pobraniu projektu z repozytorium należy w konsoli wejść do katalogu `masi-STP-backend` i wywołać komendę
+### Building the Spring Boot project
+In order to build the project, go to the `masi-STP-backend` directory and execute the following command:
+ - linux/osx
 ```bash
 ./gradlew build (linux/osx)
 ```
-na windowsie należy wywołać plik `gradlew.bat` z parametrem `build`
+ - windows
+```bash
+./gradlew.bat build
+```
+
 ### Uruchomienie projektu
 Po wywołaniu powyższej komendy projekt uruchomić można komendą
 ```bash
