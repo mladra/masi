@@ -60,7 +60,7 @@ In order to run the project, go to the `masi-STP-backend` directory and execute 
 ```
 
 ## Lunching the Angular project
-* Install the newest Node.js. Look: https://nodejs.org/en/
+* Install the newest version of the Node.js. Look: https://nodejs.org/en/
 * Go into the directory `masi-STP-interface`
 * Install all dependecies with command:
 ```bash
